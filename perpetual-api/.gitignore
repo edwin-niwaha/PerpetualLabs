@@ -1,0 +1,19 @@
+# Backend ignores
+__pycache__/
+*.py[cod]
+db.sqlite3
+.env
+.venv
+deploy.txt
+
+
+# Common ignores
+__pycache__/
+*.log
+*.pyc
+*.pyo
+.DS_Store
+/.venv
+../.venv
+
+.venv-web/

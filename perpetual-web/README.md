@@ -86,7 +86,7 @@ cd ../perpetual-api
 
 ## Git layout
 
-perpetual-api remains a separate Git submodule. Backend edits belong to that repository; commit and publish them there before updating the parent submodule pointer for a release. No repository was pushed or deployed.
+Both perpetual-api and perpetual-web are ordinary folders tracked by the PerpetualLabs repository. Commit backend and frontend changes together from the repository root. The original API Git history is preserved locally in .git/perpetual-api-history.bundle and .git/perpetual-api-history; these backups are not published.
 
 ## Current workspace preview
 

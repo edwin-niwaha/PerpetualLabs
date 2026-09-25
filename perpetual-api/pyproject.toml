@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+extend-exclude = ["migrations", ".venv", "static", "media"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["D203", "D213", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+

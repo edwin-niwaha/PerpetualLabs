@@ -1,0 +1,13 @@
+# Focused API runtime; original requirements.txt preserved.
+Django>=5.2,<5.3
+djangorestframework>=3.16,<3.17
+djangorestframework-simplejwt>=5.5,<5.6
+django-cors-headers>=4.7,<5
+drf-yasg>=1.21.10,<2
+dj-database-url>=2.3,<4
+python-dotenv>=1.1,<2
+cloudinary>=1.41,<2
+django-cloudinary-storage>=0.3,<0.4
+whitenoise>=6.9,<7
+psycopg2-binary>=2.9.10,<3
+Pillow>=11,<13
