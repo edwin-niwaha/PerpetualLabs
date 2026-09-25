@@ -1,11 +1,6 @@
 import "server-only";
-import type {
-  Service,
-  Project,
-  Article,
-  Testimonial,
-  TeamMember,
-} from "./types";
+import type { ContentMap } from "./types";
+import { chooseContent } from "./company-content";
 
 const base = process.env.API_BASE_URL || "http://127.0.0.1:8000";
 export class ApiError extends Error {
@@ -54,13 +49,6 @@ export const endpoints = {
   testimonials: "/api/testimonials/list/",
   team: "/api/auth/team-members/list/",
 };
-type ContentMap = {
-  services: Service;
-  projects: Project;
-  blog: Article;
-  testimonials: Testimonial;
-  team: TeamMember;
-};
 export async function content<K extends keyof ContentMap>(
   kind: K,
 ): Promise<{ items: ContentMap[K][]; unavailable: boolean }> {
@@ -70,11 +58,8 @@ export async function content<K extends keyof ContentMap>(
     );
     const items = Array.isArray(data) ? data : data.results;
     if (!Array.isArray(items)) throw new ApiError(502, {});
-    return {
-      items,
-      unavailable: false,
-    };
+    return chooseContent(kind, items);
   } catch {
-    return { items: [], unavailable: true };
+    return chooseContent(kind, null);
   }
 }

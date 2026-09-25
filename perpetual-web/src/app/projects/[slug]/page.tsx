@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { content } from "@/lib/api";
 import { safeImage, safeWebsite } from "@/lib/site";
 import { ContactCta } from "@/components/ui";
+import { ProjectArtwork } from "@/components/project-artwork";
 async function getProject(slug: string) {
   const data = await content("projects");
   if (data.unavailable) throw new Error("Project content unavailable");
@@ -39,19 +40,22 @@ export default async function ProjectDetail({
         <h1>{item.title}</h1>
         <p className="detail-lead">{item.description}</p>
         <div className="detail-meta">
-          <span>
-            Completed{" "}
-            {new Date(item.completion_date).toLocaleDateString("en-GB", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
+          {item.project_type && <span>{item.project_type}</span>}
+          {item.completion_date && (
+            <span>
+              Completed{" "}
+              {new Date(item.completion_date).toLocaleDateString("en-GB", {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          )}
           {item.technologies?.map((tech) => (
             <span key={tech}>{tech}</span>
           ))}
         </div>
-        {image && (
-          <div className="detail-image">
+        <div className="detail-image">
+          {image ? (
             <Image
               src={image}
               alt={item.title}
@@ -59,9 +63,21 @@ export default async function ProjectDetail({
               sizes="(max-width: 850px) 100vw, 850px"
               priority
             />
-          </div>
-        )}
+          ) : (
+            <ProjectArtwork project={item} />
+          )}
+        </div>
         {item.detail && <div className="prose">{item.detail}</div>}
+        {!!item.focus?.length && (
+          <section className="detail-capabilities">
+            <h2>At a glance</h2>
+            <ul>
+              {item.focus.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+          </section>
+        )}
         {website && (
           <a
             href={website}
@@ -72,6 +88,9 @@ export default async function ProjectDetail({
             Visit project ↗
           </a>
         )}
+        <Link href="/contact" className="button">
+          Discuss a similar project ↗
+        </Link>
       </article>
       <ContactCta />
     </>

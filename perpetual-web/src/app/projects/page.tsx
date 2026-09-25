@@ -4,7 +4,8 @@ import { PageIntro, EmptyState, ContactCta } from "@/components/ui";
 import { ProjectsGrid } from "@/components/content-cards";
 export const metadata: Metadata = {
   title: "Our work",
-  description: "Explore projects from Perpetual Labs.",
+  description:
+    "Meet PureShopper, DonorLink, StockTrack, FinCore, CoreHR, and SchoolSync: business software from Perpetual Labs.",
 };
 export default async function Projects() {
   const data = await content("projects");
@@ -12,8 +13,8 @@ export default async function Projects() {
     <>
       <PageIntro
         label="Our work"
-        title="Thought becomes tangible."
-        description="A closer look at the ideas, details, and decisions behind our projects."
+        title="Everyday work. Thoughtfully reimagined."
+        description="Explore software for retail, nonprofit organizations, finance, people management, and education. Each product starts with a real operational need."
       />
       <section className="shell listing-section">
         {data.items.length ? (

@@ -12,7 +12,9 @@ import {
   ProjectsGrid,
   ArticlesGrid,
 } from "@/components/content-cards";
+import { Faq } from "@/components/faq";
 import { content } from "@/lib/api";
+import { company } from "@/lib/company-content";
 export const dynamic = "force-dynamic";
 export default async function Home() {
   const [services, projects, articles, testimonials] = await Promise.all([
@@ -25,7 +27,7 @@ export default async function Home() {
     <>
       <section className="shell hero">
         <div className="hero-copy">
-          <Eyebrow>Independent thinking. Lasting possibilities.</Eyebrow>
+          <Eyebrow>Thoughtful technology. Built in Kampala.</Eyebrow>
           <h1>
             Big ideas.
             <br />
@@ -36,10 +38,7 @@ export default async function Home() {
               <Asterisk className="hero-asterisk" strokeWidth={1.3} />
             </span>
           </h1>
-          <p>
-            We bring thoughtful design and purposeful engineering together to
-            turn your next idea into something that matters.
-          </p>
+          <p>{company.introduction}</p>
           <div className="hero-actions">
             <Link className="button" href="/contact">
               Let’s build something <ArrowUpRight size={19} />
@@ -51,34 +50,34 @@ export default async function Home() {
         </div>
         <Orbit />
         <div className="hero-caption">
-          <span>PERPETUAL LABS — IDEAS IN MOTION</span>
+          <span>PERPETUAL LABS / SOFTWARE, WEBSITES & IT SOLUTIONS</span>
           <a href="#what-we-do">
-            A little further down <ArrowDown size={15} />
+            Discover what we do <ArrowDown size={15} />
           </a>
         </div>
       </section>
       <div className="principle-strip">
         <div className="shell">
-          <span>Think with curiosity</span>
+          <span>Based in Kampala, Uganda</span>
           <Asterisk />
-          <span>Design with intention</span>
+          <span>Building since {company.founded}</span>
           <Asterisk />
-          <span>Build with purpose</span>
+          <span>Business-focused solutions</span>
           <Asterisk />
-          <span>Keep moving forward</span>
+          <span>Support beyond launch</span>
         </div>
       </div>
       <section className="section shell" id="what-we-do">
         <SectionHeading
-          label="01 / What we do"
-          title="Good thinking. Great making."
+          label="01 / How we help"
+          title="Better tools. Stronger businesses."
           href="/services"
-          link="All services"
+          link="Explore all services"
         />
         <div className="section-lead">
           <p>
-            From the first question to the final detail, we make room for ideas
-            that deserve to become real.
+            A connected approach to your technology—from the website customers
+            see to the systems your team relies on.
           </p>
         </div>
         {services.items.length ? (
@@ -90,11 +89,17 @@ export default async function Home() {
       <section className="work-section">
         <div className="shell section">
           <SectionHeading
-            label="02 / Selected work"
-            title="Ideas, out in the world."
+            label="02 / From the lab"
+            title="Built around the way you work."
             href="/projects"
-            link="View all work"
+            link="Explore our products"
           />
+          <div className="section-lead">
+            <p>
+              Retail, nonprofit operations, finance, and more. Meet the products
+              designed to make everyday work simpler.
+            </p>
+          </div>
           {projects.items.length ? (
             <ProjectsGrid items={projects.items.slice(0, 4)} />
           ) : (
@@ -104,34 +109,34 @@ export default async function Home() {
       </section>
       <section className="section shell approach">
         <div>
-          <Eyebrow>03 / The way we think</Eyebrow>
+          <Eyebrow>03 / A practical partnership</Eyebrow>
           <h2>
-            Better questions.
+            Understand the need.
             <br />
-            More meaningful
+            Build the right thing.
             <br />
-            <span className="serif-word">possibilities.</span>
+            <span className="serif-word">Keep it moving.</span>
           </h2>
           <Link href="/about" className="text-link">
-            Meet Perpetual Labs <ArrowUpRight size={18} />
+            Get to know Perpetual Labs <ArrowUpRight size={18} />
           </Link>
         </div>
         <div className="approach-list">
           {[
             [
               "01",
-              "Start with the why.",
-              "Before deciding what to build, we make space to understand the problem and the people behind it.",
+              "Your business comes first.",
+              "We start with the people, processes, and priorities the technology needs to serve.",
             ],
             [
               "02",
-              "Make it feel right.",
-              "Clear ideas become thoughtful experiences. Every interaction should have a reason to be there.",
+              "A solution shaped to fit.",
+              "Websites, software, and infrastructure are tailored to your needs, with attention to usability and reliability.",
             ],
             [
               "03",
-              "Build for what’s next.",
-              "Considered engineering makes room for change, so the next step can build on the last.",
+              "A partner beyond delivery.",
+              "Maintenance, training, and ongoing support help your team keep getting value from its systems.",
             ],
           ].map(([n, t, d]) => (
             <div key={n}>
@@ -149,13 +154,15 @@ export default async function Home() {
         <section className="testimonials-section">
           <div className="shell section">
             <SectionHeading
-              label="In their words"
-              title="The people behind the projects."
+              label="Client perspectives"
+              title="The work matters. So do the relationships."
             />
             <div className="testimonial-grid">
               {testimonials.items.slice(0, 3).map((t) => (
                 <figure key={t.id}>
-                  <span className="quote-mark">“</span>
+                  <span className="quote-mark" aria-hidden="true">
+                    “
+                  </span>
                   <blockquote>{t.content}</blockquote>
                   <figcaption>
                     <strong>{t.name}</strong>
@@ -170,19 +177,18 @@ export default async function Home() {
           </div>
         </section>
       )}
-      <section className="section shell">
-        <SectionHeading
-          label="04 / The journal"
-          title="Notes from the lab."
-          href="/blog"
-          link="Read the journal"
-        />
-        {articles.items.length ? (
+      {articles.items.length > 0 && (
+        <section className="section shell">
+          <SectionHeading
+            label="The journal"
+            title="Notes from the lab."
+            href="/blog"
+            link="Read the journal"
+          />
           <ArticlesGrid items={articles.items.slice(0, 3)} />
-        ) : (
-          <EmptyState subject="articles" unavailable={articles.unavailable} />
-        )}
-      </section>
+        </section>
+      )}
+      <Faq />
       <ContactCta />
     </>
   );

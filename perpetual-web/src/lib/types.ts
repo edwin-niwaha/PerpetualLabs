@@ -3,6 +3,7 @@ export type Service = {
   title: string;
   description: string;
   icon: string;
+  highlights?: string[];
   slug: string;
 };
 export type Project = {
@@ -13,7 +14,9 @@ export type Project = {
   image: string;
   slug: string;
   technologies: string[];
-  completion_date: string;
+  completion_date: string | null;
+  project_type?: string;
+  focus?: string[];
   website_url: string | null;
 };
 export type Article = {
@@ -53,4 +56,12 @@ export type FormState = {
   ok?: boolean;
   message?: string;
   errors?: Record<string, string[]>;
+};
+
+export type ContentMap = {
+  services: Service;
+  projects: Project;
+  blog: Article;
+  testimonials: Testimonial;
+  team: TeamMember;
 };

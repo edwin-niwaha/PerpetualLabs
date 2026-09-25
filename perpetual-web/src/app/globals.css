@@ -1516,3 +1516,344 @@ a:hover .project-open {
     transition: none !important;
   }
 }
+
+/* Editorial company content; extends the existing Perpetual visual language. */
+.service-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+}
+.service-highlights li {
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 5px 10px;
+  color: #484e40;
+}
+.project-artwork {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: #dce8ce;
+  color: #23331f;
+}
+.artwork-1 {
+  background: #d8e2e9;
+  color: #263d4a;
+}
+.artwork-2 {
+  background: #ebe0cf;
+  color: #51402c;
+}
+.artwork-3 {
+  background: #e0dcf0;
+  color: #40345a;
+}
+.artwork-header,
+.artwork-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+.artwork-header {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+.artwork-footer {
+  font-size: 12px;
+  border-top: 1px solid currentColor;
+  padding-top: 16px;
+}
+.artwork-title {
+  font-family: var(--heading);
+  font-size: clamp(30px, 4vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1.05;
+  position: relative;
+  z-index: 1;
+  overflow-wrap: anywhere;
+  padding: 28px 0;
+}
+.artwork-title > span {
+  display: inline-block;
+  font-size: 0.55em;
+  vertical-align: top;
+  margin-left: 8px;
+}
+.artwork-orbit {
+  position: absolute;
+  width: 290px;
+  height: 290px;
+  right: -60px;
+  top: -90px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.16;
+  box-shadow:
+    0 0 0 35px transparent,
+    0 0 0 36px currentColor,
+    0 0 0 72px transparent,
+    0 0 0 73px currentColor;
+  transform: rotate(-20deg) scaleX(0.75);
+  z-index: 0;
+}
+.project-card:hover .artwork-title {
+  transform: translateY(-3px);
+}
+.artwork-title {
+  transition: transform 0.25s ease;
+}
+.detail-image .project-artwork {
+  min-height: 440px;
+}
+.story-link {
+  margin-top: 24px;
+}
+.mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.mission-grid article {
+  background: #e9ecdf;
+  border-radius: 18px;
+  padding: 48px;
+}
+.mission-grid article + article {
+  background: #eeeee6;
+}
+.mission-grid h2 {
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin: 28px 0 20px;
+}
+.mission-grid p {
+  color: #535b4c;
+  line-height: 1.8;
+  max-width: 440px;
+}
+.values-section {
+  padding-top: 0;
+}
+.team-section {
+  background: #eeeee6;
+}
+.team-card {
+  padding: 30px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.team-initials {
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: #dce8ce;
+  color: #31492a;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 34px;
+  letter-spacing: -0.05em;
+}
+.team-card:nth-child(2n) .team-initials {
+  background: #d8e2e9;
+  color: #263d4a;
+}
+.team-card:nth-child(3n) .team-initials {
+  background: #e0dcf0;
+  color: #40345a;
+}
+.team-card h3 {
+  font-size: 22px;
+  letter-spacing: -0.035em;
+}
+.team-card p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.faq-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+}
+.faq-section .section-heading {
+  display: block;
+}
+.faq-list {
+  border-top: 1px solid var(--line);
+}
+.faq-list details {
+  border-bottom: 1px solid var(--line);
+}
+.faq-list summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  padding: 26px 0;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 1.5;
+}
+.faq-list summary::-webkit-details-marker {
+  display: none;
+}
+.faq-list summary svg {
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.faq-list details[open] summary svg {
+  transform: rotate(45deg);
+}
+.faq-list p {
+  color: var(--muted);
+  line-height: 1.8;
+  padding: 0 28px 26px 0;
+  margin: 0;
+}
+.contact-methods {
+  display: grid;
+  gap: 26px;
+  margin: 32px 0;
+}
+.contact-methods > a,
+.contact-methods > div {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+.contact-methods svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.contact-methods span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 7px;
+  color: #57644e;
+}
+.contact-methods strong,
+.contact-methods p {
+  font-size: 16px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.contact-methods a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.whatsapp-link {
+  margin-top: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.footer-location {
+  margin-top: 22px;
+  font-size: 12px;
+  color: #b9c2b1;
+}
+.footer-links a {
+  overflow-wrap: anywhere;
+}
+.detail-capabilities {
+  margin: 48px 0;
+  border-top: 1px solid var(--line);
+  padding-top: 32px;
+}
+.detail-capabilities h2 {
+  font-size: 26px;
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+}
+.detail-capabilities ul {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+}
+.detail-capabilities li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.6;
+}
+.detail-capabilities svg {
+  color: #4f7033;
+  flex-shrink: 0;
+}
+@media (max-width: 1100px) {
+  .faq-section {
+    gap: 40px;
+  }
+  .mission-grid article {
+    padding: 34px;
+  }
+}
+@media (max-width: 760px) {
+  .faq-section,
+  .mission-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .faq-section .section-heading {
+    margin-bottom: 0;
+  }
+  .mission-grid article {
+    padding: 30px;
+  }
+  .project-artwork {
+    padding: 22px;
+    min-height: 220px;
+  }
+  .artwork-title {
+    font-size: clamp(30px, 9vw, 54px);
+  }
+  .artwork-header {
+    font-size: 8px;
+  }
+  .detail-image .project-artwork {
+    min-height: 300px;
+  }
+  .team-card {
+    padding: 28px;
+  }
+  .team-initials {
+    margin-bottom: 24px;
+  }
+  .contact-methods strong {
+    font-size: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .artwork-title,
+  .faq-list summary svg {
+    transition: none;
+  }
+  .project-card:hover .artwork-title {
+    transform: none;
+  }
+}

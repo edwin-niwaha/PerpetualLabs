@@ -1,6 +1,6 @@
 # Perpetual Web
 
-Next.js App Router, TypeScript, Tailwind CSS, and the existing Perpetual Labs Django API. Public content is read from Django; no fictional projects, testimonials, or clients are seeded.
+Next.js App Router, TypeScript, Tailwind CSS, and the existing Perpetual Labs Django API. Public content comes from Django, with reviewed company content from the previous Perpetual Labs website when a collection is empty or unavailable. See [content sources](docs/content-sources.md) for provenance and editorial decisions. No fictional projects, testimonials, or clients are seeded.
 
 ## Local setup (PowerShell)
 
@@ -26,7 +26,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. Manage real services, projects, published blog posts, team members, and testimonials at http://127.0.0.1:8000/admin/. Empty sections show an honest empty state. Unpublished blog posts are excluded by Django. Article bodies are rendered as escaped plain text, preserving paragraphs; HTML is never executed.
+Open http://localhost:3000. Manage real services, projects, published blog posts, team members, and testimonials at http://127.0.0.1:8000/admin/. Services, projects, team members, and testimonials have bundled reference content; a nonempty API collection replaces that collection completely. Blog sections retain empty and unavailable states. Unpublished blog posts are excluded by Django. Article bodies are rendered as escaped plain text, preserving paragraphs; HTML is never executed.
 
 ## Environment
 

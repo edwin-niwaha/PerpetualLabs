@@ -1,14 +1,33 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Layers, Code2, Workflow } from "lucide-react";
+import {
+  ArrowUpRight,
+  Layers,
+  Code2,
+  Workflow,
+  Network,
+  ShieldCheck,
+  Database,
+  Compass,
+  Cloud,
+} from "lucide-react";
 import type { Service, Project, Article } from "@/lib/types";
 import { safeImage } from "@/lib/site";
+import { ProjectArtwork } from "./project-artwork";
 export function ServicesGrid({ items }: { items: Service[] }) {
-  const icons = [Layers, Code2, Workflow];
+  const icons = {
+    code: Code2,
+    workflow: Workflow,
+    network: Network,
+    shield: ShieldCheck,
+    database: Database,
+    compass: Compass,
+    cloud: Cloud,
+  };
   return (
     <div className="service-grid">
       {items.map((item, i) => {
-        const Icon = icons[i % icons.length];
+        const Icon = icons[item.icon as keyof typeof icons] || Layers;
         return (
           <Link
             className="service-card"
@@ -17,10 +36,17 @@ export function ServicesGrid({ items }: { items: Service[] }) {
           >
             <div className="card-top">
               <Icon size={28} strokeWidth={1.4} />
-              <span>0{i + 1}</span>
+              <span>{String(i + 1).padStart(2, "0")}</span>
             </div>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
+            {!!item.highlights?.length && (
+              <ul className="service-highlights">
+                {item.highlights.map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ul>
+            )}
             <span className="card-bottom">
               Explore service
               <ArrowUpRight size={21} />
@@ -42,32 +68,35 @@ export function ProjectsGrid({ items }: { items: Project[] }) {
         >
           <div className={`project-image project-tone-${i % 3}`}>
             {safeImage(item.image) ? (
-              <Image
-                src={safeImage(item.image)!}
-                alt={item.title}
-                fill
-                sizes="(max-width: 700px) 100vw, 50vw"
-              />
+              <>
+                <Image
+                  src={safeImage(item.image)!}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 760px) 100vw, 50vw"
+                />
+                <span className="project-open">
+                  <ArrowUpRight />
+                </span>
+              </>
             ) : (
-              <div className="project-monogram" aria-hidden="true">
-                {item.title.slice(0, 1)}
-                <span>↗</span>
-              </div>
+              <ProjectArtwork project={item} index={i} />
             )}
-            <span className="project-open">
-              <ArrowUpRight />
-            </span>
           </div>
           <div className="project-info">
             <div>
               <span className="eyebrow">
-                {item.technologies?.slice(0, 3).join(" / ") || "Project"}
+                {item.project_type ||
+                  item.technologies?.slice(0, 3).join(" / ") ||
+                  "Project"}
               </span>
               <h3>{item.title}</h3>
             </div>
-            <span className="muted">
-              {new Date(item.completion_date).getFullYear()}
-            </span>
+            {item.completion_date && (
+              <span className="muted">
+                {new Date(item.completion_date).getFullYear()}
+              </span>
+            )}
           </div>
           <p>{item.description}</p>
         </Link>

@@ -1,7 +1,7 @@
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const description =
-  "Thoughtful design. Purposeful engineering. Explore Perpetual Labs and start a conversation about your next digital project.";
+  "Perpetual Labs builds websites and business software, with IT infrastructure, security, cloud services, and support from Kampala, Uganda.";
 export function safeImage(value?: string) {
   if (!value) return null;
   try {
