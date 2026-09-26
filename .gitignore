@@ -1,0 +1,4 @@
+# Workspace tooling caches
+.ruff_cache/
+.pytest_cache/
+__pycache__/
