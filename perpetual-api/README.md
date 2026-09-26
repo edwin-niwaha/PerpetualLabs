@@ -1,160 +1,182 @@
-# 🛠️Perpetual Labs
+# Perpetual Labs API
 
-A full-stack web application powered by **Django** (REST API backend) and **Next.js** (React frontend).  
-The platform is built for modern, scalable, and responsive digital solutions.
+The **Django 5.2 / Django REST Framework** backend for the [Perpetual Labs web application](../perpetual-web/README.md). It manages accounts, client services and notifications, public website content, the product catalog, and journal publishing.
 
-[![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/release/python-3120/)
+## Capabilities
 
----
+- Username/password registration, JWT authentication, optional Google sign-in, and password-bound token revocation.
+- Username-based password recovery with expiring, single-use reset links; authenticated password changes.
+- Current-user profile retrieval, validated partial updates, and profile-picture upload/replacement/removal.
+- A client portal with account-owned inquiries and notifications.
+- Staff-managed services, projects, products, testimonials, team profiles, page sections, FAQs, and site settings.
+- Journal drafts, Markdown content, cover images, publication, and scheduled public visibility.
+- Resend email, Cloudinary media storage, Django admin, local API documentation, and deployment health checks.
 
-## 🚀 Tech Stack
+## Runtime and integrations
 
-### 🔧 Backend – Django
-- Django REST Framework
-- PostgreSQL
-- Custom user authentication
-- Media & static file handling
-- Email support
+| Component            | Configuration                                                                  |
+| -------------------- | ------------------------------------------------------------------------------ |
+| Python               | 3.12                                                                           |
+| Framework            | Django 5.2, DRF, Simple JWT                                                    |
+| Dependencies         | Tested versions in `requirements-web.lock.txt`, included by `requirements.txt` |
+| Development database | Project-local SQLite via `config.local`                                        |
+| Production database  | PostgreSQL via `DATABASE_URL`                                                  |
+| Media                | Cloudinary in development and production                                       |
+| Email                | Resend in development and production; tests use memory/mocks                   |
+| Production server    | Gunicorn with WhiteNoise static assets                                         |
 
-### 💻 Frontend – Next.js
-- React 18
-- Tailwind CSS
-- API integration with Django backend
-- Responsive design
-- Form handling
+## Local setup
 
----
+From the repository root in PowerShell:
 
-## 🧩 Project Structure
-
-## ⚙️ Getting Started
-
-### 📥 1. Clone the Repository
-
-```bash
-git clone https://github.com/edwin-niwaha/perpetual_ict.git
-cd perpetual_ict
-```
-
-## 🖥️ 2. Backend Setup (Django)
-
-```
+```powershell
 cd perpetual-api
-
-# Create and activate the supported environment (Git Bash on Windows)
-python -m venv .venv
-source .venv/Scripts/activate
-
-# Install the tested API dependencies
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-
-# Local SQLite database and admin account
-python manage_local.py migrate
-python manage_local.py createsuperuser
-python manage_local.py runserver 127.0.0.1:8100
-```
-## Python dependency files
-
-Use Python 3.12 and the project virtual environment. `requirements.txt` installs `requirements-web.lock.txt`, the tested Django 5.2 API dependency set. `requirements-web.txt` contains compatible direct dependency ranges for deliberate upgrades. Gunicorn is included for non-Windows deployments using the existing Procfile.
-
-PowerShell activation: `.\.venv\Scripts\Activate.ps1`. Git Bash activation: `source .venv/Scripts/activate`. After replacing an old environment, run `deactivate` and activate it again so the shell resolves the new Python. Verify with `python -m django --version` and `python -m pip check`.
-
-Use `python manage_local.py <command>` for local development. This launcher selects `.venv` first, falls back to `.venv-web`, and always uses `config.local`, even when the shell resolves a different Python.
-
-To use ordinary `python manage.py <command>` commands in your activated virtual environment, add this to the API directory's local `.env`:
-
-```dotenv
-DJANGO_SETTINGS_MODULE=config.settings
-DJANGO_ENV=development
-FRONTEND_URL_DEVELOPMENT=http://localhost:3000
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+# First setup only: preserve existing credentials.
+if (!(Test-Path .env)) { Copy-Item .env.development.example .env }
+.\.venv\Scripts\python.exe manage_local.py migrate
+.\.venv\Scripts\python.exe manage_local.py createsuperuser
+.\.venv\Scripts\python.exe manage_local.py runserver 127.0.0.1:8000
 ```
 
-`manage.py` loads this file before selecting Django settings. Existing shell or hosting environment variables take precedence over `.env`, and `--settings` takes precedence over both. `config.settings` selects development or production from `DJANGO_ENV`; an omitted flag defaults to production. Use `DJANGO_ENV=production` with the production environment template when deploying. Local settings use SQLite in `db.sqlite3`. Keep the local `.env` out of deployments; `.env.example` and `.env.production.example` describe production configuration.
+Configure the Resend and Cloudinary credentials in `.env` before testing mail or image uploads. Credentials are not included in the repository. For macOS/Linux, create the environment with `python3.12 -m venv .venv` and use `.venv/bin/python` for the remaining commands.
 
-A `DEBUG must be false in production` error during local migration means production settings were selected. Use the local `.env` setting above, `python manage_local.py makemigrations`, or `DJANGO_ENV=development` with `DJANGO_SETTINGS_MODULE=config.settings`.
+`manage_local.py` selects `.venv`, falling back to `.venv-web`, and forces development settings. It uses local SQLite even when production database credentials exist in the environment. Use this launcher for local administration; use `manage.py` with production variables on the host.
 
-## Uploaded images
+| Local URL                        | Purpose               |
+| -------------------------------- | --------------------- |
+| `http://127.0.0.1:8000/admin/`   | Django administration |
+| `http://127.0.0.1:8000/swagger/` | OpenAPI UI            |
+| `http://127.0.0.1:8000/redoc/`   | API reference         |
+| `http://127.0.0.1:8000/health/`  | Health response       |
 
-All image uploads use Cloudinary in development and production: profile pictures,
-team and testimonial portraits, journal covers, product images, and site visuals.
-The existing model ImageFields use shared Cloudinary storage, store public IDs,
-and return HTTPS delivery URLs. API and Django admin uploads use the same backend;
-failed uploads do not fall back to disk.
+Production disables the public API documentation. Start the frontend separately using its [setup instructions](../perpetual-web/README.md#local-setup).
 
-Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the
-API's private `.env` or hosting environment using your [Cloudinary console](https://console.cloudinary.com/).
-Never put the API secret in frontend variables. Local uploads also require these
-credentials; a separate Cloudinary product environment can isolate development.
-See `.env.development.example`.
+### Optional catalog setup
 
-Existing files in `media/` are not automatically migrated. Upload them again through
-the relevant editor to store them in Cloudinary. Existing external image URL fields
-remain supported. Static assets continue to use Django's staticfiles storage.
-Offline tests explicitly override storage or mock Cloudinary's upload/delete calls.
+After configuring Cloudinary, install the reviewed product catalog and media:
 
-## Code quality
-
-Install Ruff separately as a development tool with `python -m pip install ruff`.
-From `perpetual-api`, run:
-
-```bash
-ruff check .
-ruff format --check .
-python -m pip check
-python manage.py test --settings=config.local
-python manage.py makemigrations --check --dry-run --settings=config.local
+```powershell
+.\.venv\Scripts\python.exe manage_local.py seed_website
 ```
 
-Virtual environments, migrations, generated static files, and media are excluded
-from Ruff's source checks.
+The command preserves existing admin edits. `--update` explicitly restores catalog defaults. Versioned originals are in [content-assets](content-assets/README.md); uploaded media goes to the configured storage. Database migrations seed other initial website records. Neither migrations nor GitHub deployments copy your existing local accounts, journal entries, or database to production.
 
-## Production deployment
+## Environment configuration
 
-See [the deployment guide](../PRODUCTION.md) for required environment variables,
-release commands, security settings and administrator access. Staff sign in
-directly at /sign-in; no authentication links appear in public navigation.
+Use [.env.development.example](.env.development.example) locally and [.env.railway.example](.env.railway.example) for production. Shell/host variables take precedence over `.env`.
 
-## Email delivery (Resend)
+| Variables                                                              | Purpose                                                                              |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `DJANGO_SETTINGS_MODULE=config.settings`, `DJANGO_ENV`                 | Select development or production settings                                            |
+| `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`                                 | Django security configuration; production requires a strong secret and `DEBUG=False` |
+| `SITE_URL`, `FRONTEND_URL`                                             | Production API/web origins                                                           |
+| `SITE_URL_DEVELOPMENT`, `FRONTEND_URL_DEVELOPMENT`                     | Local origin overrides                                                               |
+| `FRONTEND_URL_PRODUCTION`                                              | Optional explicit production frontend override                                       |
+| `DATABASE_URL`, `DB_SSL_REQUIRE`                                       | Production PostgreSQL connection                                                     |
+| `TRUST_PROXY_HEADERS`                                                  | Enable only behind the configured trusted ingress                                    |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `HOST_EMAIL`                    | Mail provider, verified sender, and staff inbox                                      |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Media storage credentials                                                            |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                             | Optional OAuth client; configure both together                                       |
+| `PASSWORD_RESET_TIMEOUT`                                               | Reset-link lifetime in seconds; default `3600`                                       |
+| `WEB_CONCURRENCY`                                                      | Gunicorn workers; default `2`                                                        |
 
-All application and Django framework email uses `config.email_backends.ResendEmailBackend`.
-The backend follows PendezaConnect's Django mail adapter pattern, using Resend's fixed HTTPS
-endpoint with verified TLS, a 10-second timeout, no redirects, sanitized failure logging,
-and an idempotency key per message object. It supports text/HTML, reply-to, CC/BCC and attachments.
-There is no SMTP fallback and no browser-side Resend key.
+Production fails startup when required settings are missing or unsafe. Keep secrets out of source control. The private `.env.production` file, if present locally, is an import aid for Railway Variables; Django does not load it automatically.
 
-Set `RESEND_API_KEY`, `RESEND_FROM_EMAIL` (a Resend-verified sender), and `HOST_EMAIL`
-(the staff inbox) in the API `.env` for local development and your hosting secret store
-for production. Local runs also use Resend; Django's test runner uses an in-memory backend,
-and transport tests mock HTTPS so they do not deliver mail. Never reuse another project's credentials.
+Google's callback derives from the selected frontend origin: `<frontend>/auth/google/callback`. Check configuration without printing credentials:
 
-Contact and newsletter notifications run after database commit. A delivery failure is logged
-without message content or credentials; the submission remains saved for staff. Delivery is synchronous with persisted per-recipient records and idempotency keys. Staff can retry failures from Email deliveries in Django admin or the targeted retry_email_notifications command; there is no automatic retry worker. Contact confirmations contain
-fixed text, while submitted content is sent only to the staff inbox. Duplicate newsletter requests
-receive the same public response and do not trigger another notification.
+```powershell
+.\.venv\Scripts\python.exe manage_local.py check_social_login
+```
 
-API throttles ignore caller-supplied `X-Forwarded-For`. Apply per-client limits at trusted ingress,
-especially when Next.js shares one API source address. Authentication payloads are bounded and
-refresh attempts are throttled. Keep ingress request size limits consistent with Django and Next.js.
+## API overview
 
+Paths below are relative to the API origin. JWT-authenticated clients send `Authorization: Bearer <access-token>`; the Next.js application handles this server-side.
 
-## Client portal
+| Endpoint                                                                   | Methods            | Access / purpose                                           |
+| -------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------- |
+| `/api/auth/register/`                                                      | POST               | Public registration                                        |
+| `/api/auth/login/`                                                         | POST               | Username/password login                                    |
+| `/api/token/refresh/`                                                      | POST               | Refresh an access token                                    |
+| `/api/auth/forgot-password/`                                               | POST               | Generic reset-request response                             |
+| `/api/auth/reset-password/`                                                | POST               | Validate reset credentials and replace password            |
+| `/api/auth/profile/`                                                       | GET, PATCH         | Current user's profile                                     |
+| `/api/auth/profile/picture/`                                               | PUT, DELETE       | Current user's picture                                     |
+| `/api/auth/change-password/`                                               | POST               | Verify current password and change it                      |
+| `/api/auth/portal/`                                                        | GET                | Current user's portal                                      |
+| `/api/auth/notifications/<id>/`                                            | PATCH              | Mark an owned notification read/unread                     |
+| `/api/auth/contacts/`                                                      | POST               | Public inquiry submission; record management is staff-only |
+| `/api/services/list/`                                                      | GET                | Public services                                            |
+| `/api/projects/list/`, `/api/projects/products/`, `/api/projects/visuals/` | GET                | Public project/catalog content                             |
+| `/api/blog/blog-posts/`                                                    | GET                | Published journal entries whose publication time is due    |
+| `/api/blog/journal/`                                                       | GET, POST          | Staff journal list/create                                  |
+| `/api/blog/journal/<id>/`                                                  | GET, PATCH         | Staff journal retrieval/update                             |
+| `/api/blog/subscribe/`                                                     | POST               | Newsletter subscription                                    |
+| `/api/content/`                                                            | GET                | Public company content snapshot                            |
+| `/api/manage/`                                                             | Resource-dependent | Staff content-management router                            |
+| `/health/`                                                                 | GET                | Deployment health response                                 |
 
-The client portal API is `GET /api/auth/portal/` and read/unread updates use
-`PATCH /api/auth/notifications/<id>/` with `{"read": true}`. Both require authentication
-and enforce ownership. Clients cannot access another account's messages or team email copies.
-Portal notifications optionally trigger email when created by staff. Portal services support
-published Available and Coming soon cards. See `PRODUCTION.md` for migration and email retry commands.
+See local Swagger for schemas and the [account endpoint contracts](docs/client-account-management.md) for payloads and throttling. API permissions remain authoritative even when a frontend hides restricted controls.
 
-Email receipts distinguish saved inquiries from provider acceptance. A provider ID confirms
-acceptance, not inbox delivery. The local test sender is Perpetual Labs at `onboarding@resend.dev`;
-Resend restricts this sender to the account owner's email. Verify your own domain before sending
-to arbitrary clients. Restart Django after changing mail environment variables.
+## Media, email, and security behavior
 
-## Google login environment checks
+Images accept JPEG, PNG, or WebP up to 4 MiB and 16 million pixels. The API verifies and re-encodes image contents. Cloudinary uploads use the existing storage integration with an explicit 15-second request timeout. Journal upload failures return a cover-field error and roll back the database save.
 
-Run `python manage.py check_social_login` to display the selected environment and the exact Google Console origin and callback URL without printing credentials. See [Google setup for both environments](../perpetual-web/docs/journal-and-google-login.md).
+Resend is used locally too; local development is not an email sandbox. Automated tests use mocked delivery or an in-memory backend. Use a verified sender domain to mail clients. Contact/newsletter submissions persist independently of notification delivery; staff can review delivery records and retry failures through admin or the targeted `retry_email_notifications` command.
 
-## Deploy from GitHub to Railway
+Password-reset email uses a bounded in-process queue. It is not durable across abrupt process restarts; clients can request another link. Reset responses avoid account enumeration, links expire and cannot be reused after a successful reset, and password changes invalidate existing access/refresh tokens. Sign-out clears browser cookies; it does not individually revoke copied JWTs.
 
-See [Railway deployment](docs/railway-deployment.md) for service roots, environment variables, PostgreSQL, migrations, health checks, and first-deployment steps.
+Production uses explicit HTTPS origins, secure cookies, shared database-backed throttling, and no password/body logging. Configure trusted-ingress rate limits as well: server-side web requests can share one API source address. Never trust arbitrary forwarded-IP headers.
+
+## Checks and tests
+
+Run from `perpetual-api`:
+
+```powershell
+.\.venv\Scripts\python.exe manage_local.py check
+.\.venv\Scripts\python.exe manage_local.py test --noinput
+.\.venv\Scripts\python.exe manage_local.py makemigrations --check --dry-run
+.\.venv\Scripts\python.exe -m pip check
+# Focused journal and storage checks:
+.\.venv\Scripts\python.exe manage_local.py test api.blog api.test_cloudinary_images --noinput
+```
+
+For Python lint/format checks, install the development tool `ruff`, then run `python -m ruff check .` and `python -m ruff format --check .` inside the virtual environment. Browser tests live in [perpetual-web](../perpetual-web/README.md#browser-tests).
+
+## Railway deployment
+
+Follow the [full deployment guide](../perpetual-web/docs/railway-deployment.md). The checked-in [railway.json](railway.json) uses:
+
+| Setting                    | Value                                                                     |
+| -------------------------- | ------------------------------------------------------------------------- |
+| Service root / config path | `/perpetual-api` / `/perpetual-api/railway.json`                          |
+| Build                      | `python manage.py collectstatic --noinput`                                |
+| Pre-deploy                 | `python manage.py migrate --noinput && python manage.py createcachetable` |
+| Start                      | `gunicorn config.wsgi:application --config gunicorn.conf.py`              |
+| Health check               | `/health/`                                                                |
+
+Configure PostgreSQL, Resend, Cloudinary, and public origins before deployment. Railway supplies `PORT`; include `healthcheck.railway.app` in `ALLOWED_HOSTS`. The configured API domain is `api.perpetuallabs.tech`, paired with `perpetuallabs.tech` for the web service; connect these domains and their DNS records on the host.
+
+Run `python manage.py createsuperuser` once in the deployed API service. Run `python manage.py check --deploy` against production settings. Static files are generated during build; uploads remain in Cloudinary. Back up PostgreSQL before future schema changes.
+
+## Project structure and guides
+
+```text
+api/accounts/     Authentication, profiles, portal, and notifications
+api/blog/         Journal and newsletter
+api/home/         Company settings, sections, FAQs, and features
+api/projects/     Projects, products, site visuals, and catalog seeding
+api/services/     Service catalog
+api/testimonials/ Testimonials
+api/storage.py    Cloudinary upload timeout configuration
+config/           Environment-specific settings, mail backend, and health endpoint
+content-assets/   Seed artwork and image credits
+static/           Source static assets; staticfiles/ is generated output
+docs/             Account, deployment, and email guides
+```
+
+- [Client account management](docs/client-account-management.md)
+- [Railway deployment](docs/railway-deployment.md)
+- [Resend domain setup](docs/resend-domain.md)
+- [Frontend and staff workspace](../perpetual-web/README.md)
