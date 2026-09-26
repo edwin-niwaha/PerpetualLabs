@@ -16,4 +16,4 @@ All required production variables must be set before building. Keep `TRUST_PROXY
 
 Create the administrator once with `python manage.py createsuperuser` in the deployed API's shell. Existing local data and media are not transferred by pushing source to GitHub.
 
-Railpack copies the dependency manifest before the rest of the source. Keep `requirements.txt` self-contained so installation does not depend on files missing from that build layer. `requirements-web.lock.txt` remains a compatibility wrapper for older local install commands.
+Railpack copies the dependency manifest before the rest of the source. Keep `requirements.txt` self-contained so installation does not depend on files missing from that build layer. Install locally and in production with `python -m pip install -r requirements.txt`.

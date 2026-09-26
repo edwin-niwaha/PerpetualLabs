@@ -1,2 +1,0 @@
-# Compatibility entry point. The canonical pinned manifest is requirements.txt.
--r requirements.txt

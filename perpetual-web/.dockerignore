@@ -2,8 +2,7 @@
 node_modules
 .next
 .next-*
-.env
-.env.*
+.env*
 *.log
 *.tsbuildinfo
 artifacts

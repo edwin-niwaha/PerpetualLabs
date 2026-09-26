@@ -10,6 +10,7 @@ root = Path(__file__).resolve().parents[2] / "perpetual-api"
 sys.path.insert(0, str(root))
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.local"
 os.environ["DJANGO_ENV"] = "development"
+os.environ["LOCAL_DATABASE"] = "sqlite"
 import django
 from django.conf import settings
 

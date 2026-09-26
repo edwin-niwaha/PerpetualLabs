@@ -17,7 +17,7 @@ Django is the source of truth for published records. Empty collections stay empt
 
 ```text
 Browser → Next.js pages, Server Actions and Route Handlers → Django REST API
-                                                            ├─ SQLite locally / PostgreSQL in production
+                                                            ├─ PostgreSQL locally and in production
                                                             ├─ Cloudinary media
                                                             └─ Resend email
 ```
@@ -108,7 +108,7 @@ npx playwright test tests/journal.spec.ts tests/journal-validation.spec.ts
 npm run test:account
 ```
 
-The standard suite expects API/web servers on ports **8000/3000** and creates temporary fixtures in the local development database. Do not target production. Fixtures select the API `.venv`, then `.venv-web`; use `PLAYWRIGHT_PYTHON` to override. `PLAYWRIGHT_BASE_URL` and `PLAYWRIGHT_EXPECT_TIMEOUT` are available for local test configuration.
+The standard suite expects API/web servers on ports **8000/3000** and creates temporary fixtures in the local PostgreSQL development database. Do not target production. Fixtures select the API `.venv`, then `.venv-web`; use `PLAYWRIGHT_PYTHON` to override. `PLAYWRIGHT_BASE_URL` and `PLAYWRIGHT_EXPECT_TIMEOUT` are available for local test configuration.
 
 The account suite starts isolated services on **8002/3002**, uses a separate SQLite database and build directory, and disables real email delivery. See [account testing details](docs/client-account-management.md).
 

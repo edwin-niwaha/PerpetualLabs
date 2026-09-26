@@ -28,6 +28,21 @@ class ProductionSettingsTests(SimpleTestCase):
         with patch.dict(os.environ, env, clear=True):
             return runpy.run_module("config.production")
 
+    def test_postgres_fallback_requires_explicit_credentials(self):
+        with self.assertRaisesMessage(ImproperlyConfigured, "DB_NAME"):
+            self.load(DATABASE_URL="")
+        config = self.load(
+            DATABASE_URL="",
+            DB_NAME="app",
+            DB_USER="writer",
+            DB_PASSWORD="test",
+            DB_HOST="db",
+        )
+        self.assertEqual(config["DATABASES"]["default"]["NAME"], "app")
+        self.assertEqual(
+            config["DATABASES"]["default"]["OPTIONS"]["sslmode"], "require"
+        )
+
     def test_missing_secret_fails_closed(self):
         with self.assertRaisesMessage(ImproperlyConfigured, "SECRET_KEY"):
             self.load(SECRET_KEY="")

@@ -1,12 +1,13 @@
 """Fail-closed production settings, inherited by config.settings."""
 
+import os
 from urllib.parse import urlsplit
 
-import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa: F401,F403
 from .base import REST_FRAMEWORK as BASE_REST_FRAMEWORK
+from .database import database_config
 from .environment import (
     boolean,
     email_address,
@@ -52,16 +53,11 @@ CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = False
 
-DATABASES = {
-    "default": dj_database_url.parse(
-        required("DATABASE_URL"),
-        conn_max_age=60,
-        conn_health_checks=True,
-        ssl_require=boolean("DB_SSL_REQUIRE", True),
-    )
-}
-if DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
-    raise ImproperlyConfigured("Production requires a PostgreSQL DATABASE_URL.")
+# A configured URL takes precedence. Otherwise require explicit fallback credentials.
+if not os.getenv("DATABASE_URL", "").strip():
+    for variable in ("DB_NAME", "DB_USER", "DB_PASSWORD", "DB_HOST"):
+        required(variable)
+DATABASES = database_config(ssl_require=boolean("DB_SSL_REQUIRE", True))
 # Shared across workers without an extra service. Create with manage.py createcachetable.
 CACHES = {
     "default": {

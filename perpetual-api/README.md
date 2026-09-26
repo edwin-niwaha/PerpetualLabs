@@ -18,8 +18,8 @@ The **Django 5.2 / Django REST Framework** backend for the [Perpetual Labs web a
 | -------------------- | ------------------------------------------------------------------------------ |
 | Python               | 3.12                                                                           |
 | Framework            | Django 5.2, DRF, Simple JWT                                                    |
-| Dependencies         | Pinned, self-contained `requirements.txt`; `requirements-web.lock.txt` is a compatibility entry point |
-| Development database | Project-local SQLite via `config.local`                                        |
+| Dependencies         | Pinned, self-contained `requirements.txt` |
+| Development database | Local PostgreSQL via `config.local`                                        |
 | Production database  | PostgreSQL via `DATABASE_URL`                                                  |
 | Media                | Cloudinary in development and production                                       |
 | Email                | Resend in development and production; tests use memory/mocks                   |
@@ -40,9 +40,9 @@ if (!(Test-Path .env)) { Copy-Item .env.development.example .env }
 .\.venv\Scripts\python.exe manage_local.py runserver 127.0.0.1:8000
 ```
 
-Configure the Resend and Cloudinary credentials in `.env` before testing mail or image uploads. Credentials are not included in the repository. For macOS/Linux, create the environment with `python3.12 -m venv .venv` and use `.venv/bin/python` for the remaining commands.
+Before running migrations, start PostgreSQL and create the local database named in `DB_NAME`. Set `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST=localhost`, and `DB_PORT=5432` in `.env`; leave `DATABASE_URL` empty to use those values. Use `DB_SSL_REQUIRE=False` for a local server without TLS. Configure Resend and Cloudinary credentials before testing mail or image uploads. Credentials are not included in the repository. For macOS/Linux, create the environment with `python3.12 -m venv .venv` and use `.venv/bin/python` for the remaining commands.
 
-`manage_local.py` selects `.venv`, falling back to `.venv-web`, and forces development settings. It uses local SQLite even when production database credentials exist in the environment. Use this launcher for local administration; use `manage.py` with production variables on the host.
+`manage_local.py` selects `.venv`, falling back to `.venv-web`, and forces development settings. It defaults to PostgreSQL. Use local `DB_*` credentials with an empty `DATABASE_URL`, or supply a local PostgreSQL URL. Use this launcher for local administration; use `manage.py` with production variables on the host.
 
 | Local URL                        | Purpose               |
 | -------------------------------- | --------------------- |
@@ -180,3 +180,13 @@ docs/             Account, deployment, and email guides
 - [Railway deployment](docs/railway-deployment.md)
 - [Resend domain setup](docs/resend-domain.md)
 - [Frontend and staff workspace](../perpetual-web/README.md)
+
+## Choosing a database
+
+`config.database.database_config(ssl_require=False)` prefers a non-empty `DATABASE_URL`. If absent, it uses `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT` (default `5432`). Both PostgreSQL paths use a 600-second connection lifetime and connection health checks.
+
+- **Isolated SQLite:** use `LOCAL_DATABASE=sqlite` only when explicitly needed, such as isolated browser tests. The old `db.sqlite3` is retained but is not the development default.
+- **Local PostgreSQL (default):** use `LOCAL_DATABASE=postgresql`. Provide a local `DATABASE_URL`, or leave it empty and configure the `DB_*` values. Set `DB_SSL_REQUIRE=False` only if your local PostgreSQL server does not support TLS.
+- **Railway production:** set `DJANGO_ENV=production`, `DATABASE_URL=${{Postgres.DATABASE_URL}}`, and `DB_SSL_REQUIRE=True`. `LOCAL_DATABASE` does not affect production. Without a URL, production requires explicit non-empty `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `DB_HOST` instead of accepting development defaults.
+
+Run `python manage.py migrate --noinput` in the deployed API to apply the schema. This does **not** copy records from local SQLite/PostgreSQL to production. Moving existing data requires a separate export/import and backups of both databases; seeded production records must be reconciled before importing. No existing data is transferred by changing these settings.

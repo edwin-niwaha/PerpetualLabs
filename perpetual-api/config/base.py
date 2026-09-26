@@ -3,6 +3,8 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
+import dj_database_url
 from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
@@ -155,20 +157,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "default_db_name"),
-        "USER": os.environ.get("DB_USER", "default_user"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "default_password"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
-    }
-}
-
+# Database configuration is selected by config.local or config.production.
 
 AUTH_USER_MODEL = "accounts.User"
 

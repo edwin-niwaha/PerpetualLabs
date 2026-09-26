@@ -1,8 +1,7 @@
 .git
 .venv
 .venv*
-.env
-.env.*
+.env*
 *.log
 *.sqlite3
 __pycache__
@@ -11,3 +10,5 @@ __pycache__
 .ruff_cache
 media
 staticfiles
+
+.backups
