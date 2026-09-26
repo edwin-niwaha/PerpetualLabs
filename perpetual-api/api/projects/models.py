@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class Category(models.Model):
@@ -38,7 +37,7 @@ class Client(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    detail = models.TextField(blank=True, null=True) 
+    detail = models.TextField(blank=True, null=True)
     client = models.ForeignKey(
         Client, on_delete=models.SET_NULL, null=True, related_name="projects"
     )
@@ -75,15 +74,52 @@ class Project(models.Model):
         ordering = ["-completion_date"]
 
 
-
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='products/')
-    
+    slug = models.SlugField(unique=True, null=True, blank=True)
+    image = models.ImageField(upload_to="products/", blank=True)
+    image_alt = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    detail = models.TextField(blank=True)
+    category = models.CharField(max_length=100, blank=True)
+    website_url = models.URLField(blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("live", "Live"),
+            ("development", "In development"),
+            ("available", "Available"),
+        ],
+        default="available",
+    )
+    focus = models.JSONField(default=list, blank=True)
+    is_featured = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.name)[:40] or "product"
+            candidate, counter = base, 2
+            while Product.objects.exclude(pk=self.pk).filter(slug=candidate).exists():
+                candidate = f"{base}-{counter}"
+                counter += 1
+            self.slug = candidate
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
-    
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
-            return [IsAuthenticated()]
-        return [AllowAny()]
+
+
+class SiteVisual(models.Model):
+    key = models.SlugField(unique=True)
+    image = models.ImageField(upload_to="site/")
+    alt = models.CharField(max_length=255)
+    credit = models.CharField(max_length=500, blank=True)
+    source_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.key

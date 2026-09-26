@@ -9,6 +9,7 @@ const links = [
   ["Services", "/services"],
   ["Our work", "/projects"],
   ["Journal", "/blog"],
+  ["Client portal", "/account"],
 ];
 export function Header() {
   const pathname = usePathname();
@@ -29,9 +30,6 @@ export function Header() {
           ))}
         </nav>
         <div className="header-actions">
-          <Link className="sign-in-link" href="/account">
-            My account
-          </Link>
           <Link href="/contact" className="button button-small">
             Let’s talk <ArrowUpRight size={16} />
           </Link>
@@ -52,11 +50,7 @@ export function Header() {
           className="mobile-nav"
           aria-label="Mobile navigation"
         >
-          {[
-            ...links,
-            ["My account", "/account"],
-            ["Let’s talk", "/contact"],
-          ].map(([label, href]) => (
+          {[...links, ["Let’s talk", "/contact"]].map(([label, href]) => (
             <Link key={href} href={href} onClick={() => setOpen(false)}>
               {label}
               <ArrowUpRight size={18} />

@@ -1,10 +1,12 @@
 "use server";
 import { z } from "zod";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { api, ApiError } from "./api";
+import { actionFailure } from "./action-errors";
 import { authenticated, clearSession, saveSession } from "./session";
-import type { FormState } from "./types";
+import type { FormState, Profile } from "./types";
 
 const username = z.string().trim().min(1, "Enter your username.").max(150);
 const password = z.string().min(8, "Use at least 8 characters.").max(128);
@@ -37,46 +39,32 @@ const contactSchema = z.object({
     .max(5000),
 });
 const profileSchema = z.object({
+  date_of_birth: z
+    .union([z.iso.date(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" ? null : value)),
   first_name: z.string().trim().max(50),
   last_name: z.string().trim().max(50),
   bio: z.string().trim().max(2000),
 });
-function failure(error: unknown): FormState {
-  if (error instanceof ApiError) {
-    if (error.status >= 500)
-      return {
-        message: "We could not connect right now. Please try again shortly.",
-      };
-    if (error.status === 429)
-      return {
-        message: "Too many attempts. Please wait a while before trying again.",
-      };
-    const errors = Object.fromEntries(
-      Object.entries(error.data).filter(([, v]) => Array.isArray(v)),
-    ) as Record<string, string[]>;
-    return {
-      message: error.data.non_field_errors
-        ? String(error.data.non_field_errors)
-        : error.message,
-      errors,
-    };
-  }
-  return { message: "Something went wrong. Please try again." };
-}
 export async function signIn(_: FormState, form: FormData): Promise<FormState> {
   const result = loginSchema.safeParse(Object.fromEntries(form));
   if (!result.success)
     return { errors: z.flattenError(result.error).fieldErrors };
+  let profile: Profile;
   try {
     const tokens = await api<{ access: string; refresh: string }>(
       "/api/auth/login/",
       { method: "POST", body: JSON.stringify(result.data) },
     );
+    profile = await api<Profile>("/api/auth/profile/", {
+      headers: { Authorization: `Bearer ${tokens.access}` },
+    });
     await saveSession(tokens);
   } catch (error) {
-    return failure(error);
+    return actionFailure(error);
   }
-  redirect("/account");
+  redirect(profile?.is_staff ? "/account/content" : "/account");
 }
 export async function register(
   _: FormState,
@@ -92,7 +80,7 @@ export async function register(
       body: JSON.stringify({ username, email, password }),
     });
   } catch (error) {
-    return failure(error);
+    return actionFailure(error);
   }
   redirect("/sign-in?created=1");
 }
@@ -105,18 +93,18 @@ export async function sendContact(
   if (!result.success)
     return { errors: z.flattenError(result.error).fieldErrors };
   try {
-    await api("/api/auth/contacts/", {
-      method: "POST",
-      body: JSON.stringify(result.data),
-    });
+    const jar = await cookies();
+    const init = { method: "POST", body: JSON.stringify(result.data) };
+    type Receipt = { message: string; email_status: "accepted" | "pending" };
+    const receipt =
+      jar.has("pl_access") || jar.has("pl_refresh")
+        ? await authenticated<Receipt>("/api/auth/contacts/", init, true)
+        : await api<Receipt>("/api/auth/contacts/", init);
+    revalidatePath("/account");
+    return { ok: true, message: receipt.message };
   } catch (error) {
-    return failure(error);
+    return actionFailure(error);
   }
-  return {
-    ok: true,
-    message:
-      "Message received. Thank you for getting in touch — we’ll take it from here.",
-  };
 }
 export async function updateProfile(
   _: FormState,
@@ -136,7 +124,7 @@ export async function updateProfile(
       await clearSession();
       redirect("/sign-in?expired=1");
     }
-    return failure(error);
+    return actionFailure(error);
   }
   revalidatePath("/account");
   return { ok: true, message: "Your profile has been updated." };

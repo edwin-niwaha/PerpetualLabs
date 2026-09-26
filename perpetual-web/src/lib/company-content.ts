@@ -8,7 +8,7 @@ export const company = {
   founded: "2020",
   phone: "+256 703 163 074",
   phoneHref: "tel:+256703163074",
-  email: "perpetual.ict@gmail.com",
+  email: "hello.perpetuallabs@gmail.com",
   whatsapp: "https://wa.me/256703163074",
   introduction:
     "Websites, business software, and IT support for teams ready to work better. From Kampala, we help turn everyday challenges into practical digital solutions.",
@@ -108,114 +108,6 @@ export const referenceContent: { [K in keyof ContentMap]?: ContentMap[K][] } = {
       highlights: ["Cloud migration", "Ongoing management", "Optimization"],
     },
   ],
-  projects: [
-    {
-      id: -11,
-      slug: "pureshopper",
-      title: "PureShopper",
-      project_type: "E-commerce",
-      description:
-        "An online retail platform for managing products, orders, and the shopping experience.",
-      detail:
-        "Customizable storefront features support businesses as their online sales grow.",
-      focus: ["Product listings", "Order management", "Online retail"],
-      image: "",
-      technologies: [],
-      completion_date: "2024-12-31",
-      website_url: null,
-    },
-    {
-      id: -12,
-      slug: "sponsorship-donor-management-software-sdms",
-      title: "DonorLink",
-      project_type: "Nonprofit operations",
-      description:
-        "Cloud-based donor and sponsorship management for NGOs, charities, and community organizations.",
-      detail:
-        "Bring supporter relationships, sponsorship administration, and fundraising insights into one place.",
-      focus: [
-        "Donor relationships",
-        "Sponsorship management",
-        "Fundraising insights",
-      ],
-      image: "",
-      technologies: [],
-      completion_date: "2022-04-23",
-      website_url: null,
-    },
-    {
-      id: -13,
-      slug: "inventory-management-software",
-      title: "StockTrack",
-      project_type: "Sales & inventory",
-      description:
-        "Connected sales and stock management for smaller businesses across multiple selling channels.",
-      detail:
-        "Track inventory, plan replenishment, and understand sales through operational reporting.",
-      focus: ["Stock tracking", "Reordering", "Sales reporting"],
-      image: "",
-      technologies: [],
-      completion_date: "2021-04-11",
-      website_url: null,
-    },
-    {
-      id: -14,
-      slug: "perpetual-accounting",
-      title: "FinCore",
-      project_type: "Accounting",
-      description:
-        "Financial management tools for individuals, small businesses, and growing teams.",
-      detail:
-        "Keep income, expenses, credit, and savings organized with reporting and automation.",
-      focus: ["Income and expenses", "Credit management", "Savings goals"],
-      image: "",
-      technologies: [],
-      completion_date: "2020-08-10",
-      website_url: null,
-    },
-    {
-      id: -15,
-      slug: "human-resource-management-system-hrms",
-      title: "CoreHR",
-      project_type: "Human resources",
-      description:
-        "A central workspace for HR teams managing the employee lifecycle.",
-      detail:
-        "Connect recruitment, payroll, performance management, and employee engagement.",
-      focus: ["Recruitment", "Payroll", "Performance management"],
-      image: "",
-      technologies: [],
-      completion_date: null,
-      website_url: null,
-    },
-    {
-      id: -16,
-      slug: "school-manager",
-      title: "SchoolSync",
-      project_type: "Education",
-      description:
-        "School administration software connecting staff, students, and parents.",
-      detail:
-        "Manage student records, attendance, family communication, and academic reports.",
-      focus: ["Student records", "Attendance", "Academic reporting"],
-      image: "",
-      technologies: [],
-      completion_date: null,
-      website_url: null,
-    },
-  ],
-  team: [
-    { id: -21, name: "Edwin Niwaha", position: "CEO & Founder", image: "" },
-    { id: -22, name: "Elijah Niwaha", position: "CTO", image: "" },
-    { id: -23, name: "Albert Ashaba", position: "Lead Developer", image: "" },
-    { id: -24, name: "Dennis Samba", position: "Lead Developer", image: "" },
-    {
-      id: -25,
-      name: "Christbell Mujuni",
-      position: "Marketing Officer",
-      image: "",
-    },
-  ],
   testimonials: [
     {
       id: -31,
@@ -270,7 +162,7 @@ export function chooseContent<K extends keyof ContentMap>(
   unavailable: boolean;
   source: "api" | "reference" | "unavailable";
 } {
-  if (items?.length) return { items, unavailable: false, source: "api" };
+  if (items !== null) return { items, unavailable: false, source: "api" };
   const reference = referenceContent[kind] || [];
   return {
     items: reference,

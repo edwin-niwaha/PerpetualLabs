@@ -1,19 +1,16 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Brand } from "./brand";
-import { company } from "@/lib/company-content";
-export function Footer() {
+import { websiteContent } from "@/lib/website-content";
+export async function Footer() {
+  const { company } = await websiteContent();
   return (
     <footer className="site-footer">
       <div className="shell">
         <div className="footer-top">
           <div>
             <Brand />
-            <p>
-              Websites. Software. IT solutions.
-              <br />
-              Built in Kampala, with your business in mind.
-            </p>
+            <p>{company.introduction}</p>
             <span className="footer-location">
               {company.location} · Since {company.founded}
             </span>
@@ -24,7 +21,6 @@ export function Footer() {
               <Link href="/about">About us</Link>
               <Link href="/services">Services</Link>
               <Link href="/projects">Our work</Link>
-              <Link href="/account">My account</Link>
             </div>
             <div>
               <span className="eyebrow">Let’s connect</span>
@@ -36,12 +32,13 @@ export function Footer() {
               <Link href="/contact">
                 Start a conversation <ArrowUpRight size={14} />
               </Link>
-              <Link href="/sign-in">Sign in</Link>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Perpetual Labs.</span>
+          <span>
+            © {new Date().getFullYear()} {company.name}.
+          </span>
           <span>Thoughtful technology. Practical possibilities.</span>
           <a href="#top">Back to top ↑</a>
         </div>

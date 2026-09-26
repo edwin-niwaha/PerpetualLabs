@@ -1,64 +1,43 @@
 import Link from "next/link";
-import { ArrowUpRight, ArrowDown, Asterisk } from "lucide-react";
-import { Orbit } from "@/components/orbit";
+import { ArrowUpRight, Asterisk } from "lucide-react";
+import { GalaxyHero } from "@/components/galaxy-hero";
+import { ProductGrid } from "@/components/product-grid";
+import { safeImage, safeWebsite } from "@/lib/site";
 import {
   Eyebrow,
   SectionHeading,
   EmptyState,
   ContactCta,
 } from "@/components/ui";
-import {
-  ServicesGrid,
-  ProjectsGrid,
-  ArticlesGrid,
-} from "@/components/content-cards";
+import { ServicesGrid, ArticlesGrid } from "@/components/content-cards";
 import { Faq } from "@/components/faq";
 import { content } from "@/lib/api";
-import { company } from "@/lib/company-content";
+import { websiteContent } from "@/lib/website-content";
 export const dynamic = "force-dynamic";
 export default async function Home() {
-  const [services, projects, articles, testimonials] = await Promise.all([
-    content("services"),
-    content("projects"),
-    content("blog"),
-    content("testimonials"),
-  ]);
+  const { company, section, features } = await websiteContent();
+  const [services, products, articles, testimonials, visuals] =
+    await Promise.all([
+      content("services"),
+      content("products"),
+      content("blog"),
+      content("testimonials"),
+      content("visuals"),
+    ]);
+  const galaxy = visuals.items.find((v) => v.key === "galaxy");
+  const earth = visuals.items.find((v) => v.key === "earth");
   return (
     <>
-      <section className="shell hero">
-        <div className="hero-copy">
-          <Eyebrow>Thoughtful technology. Built in Kampala.</Eyebrow>
-          <h1>
-            Big ideas.
-            <br />
-            Built to <span className="serif-word">go</span>
-            <br />
-            <span className="hero-last">
-              further.
-              <Asterisk className="hero-asterisk" strokeWidth={1.3} />
-            </span>
-          </h1>
-          <p>{company.introduction}</p>
-          <div className="hero-actions">
-            <Link className="button" href="/contact">
-              Let’s build something <ArrowUpRight size={19} />
-            </Link>
-            <Link className="text-link" href="/projects">
-              Explore our work <ArrowUpRight size={18} />
-            </Link>
-          </div>
-        </div>
-        <Orbit />
-        <div className="hero-caption">
-          <span>PERPETUAL LABS / SOFTWARE, WEBSITES & IT SOLUTIONS</span>
-          <a href="#what-we-do">
-            Discover what we do <ArrowDown size={15} />
-          </a>
-        </div>
-      </section>
+      <GalaxyHero
+        copy={section("home-hero")}
+        galaxy={safeImage(galaxy?.image)}
+        earth={safeImage(earth?.image)}
+        credit={galaxy?.credit || ""}
+        source={safeWebsite(galaxy?.source_url)}
+      />
       <div className="principle-strip">
         <div className="shell">
-          <span>Based in Kampala, Uganda</span>
+          <span>Based in {company.location}</span>
           <Asterisk />
           <span>Building since {company.founded}</span>
           <Asterisk />
@@ -69,16 +48,13 @@ export default async function Home() {
       </div>
       <section className="section shell" id="what-we-do">
         <SectionHeading
-          label="01 / How we help"
-          title="Better tools. Stronger businesses."
+          label={section("home-services").eyebrow}
+          title={section("home-services").title}
           href="/services"
           link="Explore all services"
         />
         <div className="section-lead">
-          <p>
-            A connected approach to your technology—from the website customers
-            see to the systems your team relies on.
-          </p>
+          <p>{section("home-services").description}</p>
         </div>
         {services.items.length ? (
           <ServicesGrid items={services.items.slice(0, 3)} />
@@ -86,68 +62,54 @@ export default async function Home() {
           <EmptyState subject="services" unavailable={services.unavailable} />
         )}
       </section>
-      <section className="work-section">
+      <section className="work-section product-section" id="products">
         <div className="shell section">
           <SectionHeading
-            label="02 / From the lab"
-            title="Built around the way you work."
+            label={section("home-products").eyebrow}
+            title={section("home-products").title}
             href="/projects"
             link="Explore our products"
           />
           <div className="section-lead">
-            <p>
-              Retail, nonprofit operations, finance, and more. Meet the products
-              designed to make everyday work simpler.
-            </p>
+            <p>{section("home-products").description}</p>
           </div>
-          {projects.items.length ? (
-            <ProjectsGrid items={projects.items.slice(0, 4)} />
+          {products.items.filter((p) => p.is_featured).length ? (
+            <ProductGrid
+              items={products.items.filter((p) => p.is_featured).slice(0, 4)}
+            />
           ) : (
-            <EmptyState subject="projects" unavailable={projects.unavailable} />
+            <EmptyState subject="projects" unavailable={products.unavailable} />
           )}
         </div>
       </section>
       <section className="section shell approach">
         <div>
-          <Eyebrow>03 / A practical partnership</Eyebrow>
-          <h2>
-            Understand the need.
-            <br />
-            Build the right thing.
-            <br />
-            <span className="serif-word">Keep it moving.</span>
-          </h2>
+          <Eyebrow>{section("home-approach").eyebrow}</Eyebrow>
+          <h2 className="preserve-lines">{section("home-approach").title}</h2>
+          {section("home-approach").description && (
+            <p>{section("home-approach").description}</p>
+          )}
           <Link href="/about" className="text-link">
             Get to know Perpetual Labs <ArrowUpRight size={18} />
           </Link>
         </div>
         <div className="approach-list">
-          {[
-            [
-              "01",
-              "Your business comes first.",
-              "We start with the people, processes, and priorities the technology needs to serve.",
-            ],
-            [
-              "02",
-              "A solution shaped to fit.",
-              "Websites, software, and infrastructure are tailored to your needs, with attention to usability and reliability.",
-            ],
-            [
-              "03",
-              "A partner beyond delivery.",
-              "Maintenance, training, and ongoing support help your team keep getting value from its systems.",
-            ],
-          ].map(([n, t, d]) => (
-            <div key={n}>
-              <span>{n}</span>
-              <div>
-                <h3>{t}</h3>
-                <p>{d}</p>
-              </div>
-              <ArrowUpRight size={20} />
-            </div>
-          ))}
+          {features
+            .filter((f) => f.group === "approach")
+            .map((feature, index) => {
+              const n = String(index + 1).padStart(2, "0");
+              const { title: t, description: d } = feature;
+              return (
+                <div key={n}>
+                  <span>{n}</span>
+                  <div>
+                    <h3>{t}</h3>
+                    <p>{d}</p>
+                  </div>
+                  <ArrowUpRight size={20} />
+                </div>
+              );
+            })}
         </div>
       </section>
       {testimonials.items.length > 0 && (

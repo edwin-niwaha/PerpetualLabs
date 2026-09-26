@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Client, Project
+from .models import Category, Client, Product, Project, SiteVisual
 
 
 @admin.register(Project)
@@ -23,3 +23,16 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("name",)
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("name", "status", "is_featured", "is_published", "sort_order")
+    list_editable = ("is_featured", "is_published", "sort_order")
+    prepopulated_fields = {"slug": ("name",)}
+    search_fields = ("name", "description")
+
+
+@admin.register(SiteVisual)
+class SiteVisualAdmin(admin.ModelAdmin):
+    list_display = ("key", "alt")

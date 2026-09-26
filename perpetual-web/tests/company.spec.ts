@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { chooseContent, referenceContent } from "../src/lib/company-content";
+import { chooseContent } from "../src/lib/company-content";
 
 test("API collections override reference content and failures stay honest", () => {
   const records = [
@@ -12,10 +12,12 @@ test("API collections override reference content and failures stay honest", () =
     },
   ];
   expect(chooseContent("services", records).items).toEqual(records);
-  expect(chooseContent("services", []).source).toBe("reference");
-  expect(chooseContent("projects", null).items).toEqual(
-    referenceContent.projects,
-  );
+  expect(chooseContent("services", [])).toEqual({
+    items: [],
+    unavailable: false,
+    source: "api",
+  });
+  expect(chooseContent("products", null).unavailable).toBe(true);
   expect(chooseContent("blog", null)).toEqual({
     items: [],
     unavailable: true,
@@ -38,10 +40,10 @@ test("company pages provide usable content and contact routes", async ({
     "Cloud migration",
   );
   await page.goto("/projects");
-  await expect(page.locator(".project-card")).toHaveCount(6);
-  await page.locator('a[href="/projects/pureshopper"]').first().click();
+  await expect(page.locator(".product-card")).toHaveCount(4);
+  await page.locator('a[href="/projects/pendezaconnect"]').first().click();
   await expect(page.locator(".detail-capabilities")).toContainText(
-    "Order management",
+    "Child sponsorship",
   );
   await page.goto("/about");
   await expect(page.locator(".team-card")).toHaveCount(5);
@@ -54,7 +56,7 @@ test("company pages provide usable content and contact routes", async ({
     "tel:+256703163074",
   );
   await expect(
-    page.locator('.contact-methods a[href="mailto:perpetual.ict@gmail.com"]'),
+    page.locator('.contact-methods a[href="mailto:hello.perpetuallabs@gmail.com"]'),
   ).toBeVisible();
   await expect(page.locator(".whatsapp-link")).toHaveAttribute(
     "href",
@@ -73,4 +75,17 @@ test("company pages provide usable content and contact routes", async ({
     "open",
     "",
   );
+});
+
+test("admin-managed team members never reappear from reference content", () => {
+  expect(chooseContent("team", [])).toEqual({
+    items: [],
+    unavailable: false,
+    source: "api",
+  });
+  expect(chooseContent("team", null)).toEqual({
+    items: [],
+    unavailable: true,
+    source: "unavailable",
+  });
 });

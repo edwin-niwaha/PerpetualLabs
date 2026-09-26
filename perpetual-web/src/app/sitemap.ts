@@ -5,8 +5,10 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = ["", "/about", "/services", "/projects", "/blog", "/contact"];
   const collections = await Promise.all(
-    (["services", "projects", "blog"] as const).map(async (kind) =>
-      (await content(kind)).items.map((item) => `/${kind}/${item.slug}`),
+    (["services", "projects", "products", "blog"] as const).map(async (kind) =>
+      (await content(kind)).items.map(
+        (item) => `/${kind === "products" ? "projects" : kind}/${item.slug}`,
+      ),
     ),
   );
   return [...paths, ...collections.flat()].map((path) => ({

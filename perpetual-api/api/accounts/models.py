@@ -1,15 +1,13 @@
-import logging
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.html import escape
 
-logger = logging.getLogger(__name__)
+from api.notifications import send_contact_email
 
 
 class User(AbstractUser):
@@ -19,12 +17,20 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
+    profile_picture = models.ImageField(upload_to="profiles/", blank=True)
 
     def __str__(self):
         return self.username
 
 
 class Contact(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="inquiries",
+    )
     name = models.CharField(max_length=255)
     email = models.EmailField()
     user_message = models.TextField()
@@ -34,77 +40,10 @@ class Contact(models.Model):
         return f"Contact from {self.name}"
 
 
-# Function to send email to both the user and the host
-def send_contact_email(contact):
-    safe_name = escape(contact.name)
-    safe_message = escape(contact.user_message)
-    safe_email = escape(contact.email)
-    # Email to the user (Confirmation of submission)
-    subject_user = f"Thank you for your contact, {contact.name}!"
-
-    # HTML email for the user
-    message_user = f"""
-    <html>
-        <body style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="color: #4CAF50;">Hello {safe_name},</h2>
-            <p>Thank you so much for reaching out to us! We’ve received your message, and our team will be reviewing it shortly. We understand how important your inquiry is, and we are committed to providing you with the best support possible.</p>
-            
-            <p>Here’s a copy of your message for your reference:</p>
-            <blockquote style="font-style: italic; border-left: 3px solid #4CAF50; padding-left: 15px;">
-                {safe_message}
-            </blockquote>
-
-            <p>Our team will get back to you as soon as possible, typically within 24–48 hours. In the meantime, if you have any urgent questions or need further assistance, please feel free to reply to this email.</p>
-
-            <p>Thank you again for getting in touch with us. We appreciate your interest and look forward to assisting you!</p>
-            
-            <br>
-            <p>Best regards,</p>
-            <p><strong>The Support Team</strong></p>
-            <p><em>Perpetual Tech</em></p>
-            <p><em>Tel: +256 703-163-074</em></p>
-        </body>
-    </html>
-    """
-    from_email = settings.EMAIL_HOST_USER  # Ensure this is set in your settings.py
-    recipient_user = [contact.email]  # Send the email to the user's email address
-
-    # Email to the host (Admin notifying about new contact)
-    subject_host = f"New Contact Request from {contact.name}"
-
-    # HTML email for the host
-    message_host = f"""
-    <html>
-        <body style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="color: #FF5722;">New Contact Request from {safe_name}</h2>
-            <p><strong>Name:</strong> {safe_name}</p>
-            <p><strong>Email:</strong> {safe_email}</p>
-            <p><strong>Message:</strong></p>
-            <blockquote style="font-style: italic; border-left: 3px solid #FF5722; padding-left: 15px;">
-                {safe_message}
-            </blockquote>
-            <p>Best regards,</p>
-            <p><strong>Your Contact Form</strong></p>
-        </body>
-    </html>
-    """
-    recipient_host = [
-        settings.HOST_EMAIL
-    ]  # Set this in your settings.py to the host's email address
-
-    # Send both emails (User and Host)
-    send_mail(subject_user, "", from_email, recipient_user, html_message=message_user)
-    send_mail(subject_host, "", from_email, recipient_host, html_message=message_host)
-
-
-# Signal to send an email to both the user and the host when a new Contact is created
 @receiver(post_save, sender=Contact)
-def contact_post_save(sender, instance, created, **kwargs):
-    if created:  # Only send email for new contact submissions
-        try:
-            send_contact_email(instance)
-        except Exception:
-            logger.exception("Failed to send contact notification email.")
+def contact_post_save(sender, instance, created, raw=False, **kwargs):
+    if created and not raw:
+        transaction.on_commit(lambda: send_contact_email(instance))
 
 
 # Define the positions as specified
@@ -113,6 +52,7 @@ POSITION_CHOICES = [
     ("security_specialist", "Security Specialist"),
     ("ceo_founder", "CEO & Founder"),
     ("cto", "CTO"),
+    ("marketing_officer", "Marketing Officer"),
 ]
 
 
@@ -122,6 +62,7 @@ class TeamMember(models.Model):
         max_length=255, choices=POSITION_CHOICES, default="lead_developer"
     )
     image = models.URLField(blank=True)
+    portrait = models.ImageField(upload_to="team/", blank=True)
 
     def __str__(self):
         return self.name
@@ -133,7 +74,128 @@ class TeamMember(models.Model):
         if not self.position.strip():
             raise ValidationError({"position": "Position cannot be blank."})
 
-        if not self.image.startswith(("http://", "https://")):
+        if self.image and not self.image.startswith(("http://", "https://")):
             raise ValidationError(
                 {"image": "Image URL must start with http:// or https://."}
             )
+
+
+class PortalNotification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notifications"
+    )
+    title = models.CharField(max_length=200)
+    body = models.TextField(max_length=5000)
+    email_requested = models.BooleanField(
+        default=False,
+        help_text="Also send this notification to the client's account email.",
+    )
+    read_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return self.title
+
+
+class EmailDelivery(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        SENDING = "sending", "Sending"
+        ACCEPTED = "accepted", "Accepted by email provider"
+        FAILED = "failed", "Needs attention"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="email_deliveries",
+    )
+    contact = models.ForeignKey(
+        Contact,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="email_deliveries",
+    )
+    deduplication_key = models.CharField(max_length=160, unique=True)
+    idempotency_key = models.UUIDField(default=uuid.uuid4, editable=False)
+    recipient = models.EmailField()
+    subject = models.CharField(max_length=200)
+    body = models.TextField()
+    html = models.TextField()
+    reply_to = models.EmailField(blank=True)
+    audience = models.CharField(
+        max_length=16,
+        choices=[("client", "Client"), ("team", "Team")],
+        default="client",
+    )
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.PENDING
+    )
+    provider_id = models.CharField(max_length=200, blank=True)
+    last_error = models.CharField(max_length=200, blank=True)
+    attempts = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"{self.subject} ({self.status})"
+
+
+class PortalService(models.Model):
+    title = models.CharField(max_length=120)
+    description = models.TextField(max_length=1000)
+    status = models.CharField(
+        max_length=16,
+        choices=[("available", "Available"), ("coming_soon", "Coming soon")],
+        default="coming_soon",
+    )
+    is_published = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+
+    def __str__(self):
+        return self.title
+
+
+@receiver(post_save, sender=PortalNotification)
+def notification_post_save(sender, instance, created, raw=False, **kwargs):
+    if created and not raw and instance.email_requested:
+        from api.notifications import send_portal_notification
+
+        transaction.on_commit(lambda: send_portal_notification(instance))
+
+
+class SocialIdentity(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="social_identities",
+    )
+    provider = models.CharField(max_length=20, default="google")
+    subject = models.CharField(max_length=255)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["provider", "subject"], name="unique_social_identity"
+            )
+        ]
+
+
+class SocialLoginAttempt(models.Model):
+    state = models.CharField(max_length=128, unique=True)
+    nonce = models.CharField(max_length=128)
+    code_verifier = models.CharField(max_length=128)
+    browser_challenge = models.CharField(max_length=64)
+    expires_at = models.DateTimeField(db_index=True)
+    consumed = models.BooleanField(default=False)

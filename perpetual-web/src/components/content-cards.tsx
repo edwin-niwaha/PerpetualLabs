@@ -73,7 +73,11 @@ export function ProjectsGrid({ items }: { items: Project[] }) {
                   src={safeImage(item.image)!}
                   alt={item.title}
                   fill
-                  sizes="(max-width: 760px) 100vw, 50vw"
+                  sizes={
+                    items.length === 1
+                      ? "100vw"
+                      : "(max-width: 760px) 100vw, 50vw"
+                  }
                 />
                 <span className="project-open">
                   <ArrowUpRight />

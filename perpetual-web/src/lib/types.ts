@@ -29,6 +29,8 @@ export type Article = {
   author: string;
   category: string | null;
   created_at: string;
+  published_at?: string | null;
+  updated_at?: string;
 };
 export type Testimonial = {
   id: number;
@@ -45,6 +47,9 @@ export type TeamMember = {
   image: string;
 };
 export type Profile = {
+  date_of_birth?: string | null;
+  profile_picture?: string | null;
+  is_staff: boolean;
   id: number;
   username: string;
   email: string;
@@ -60,8 +65,26 @@ export type FormState = {
 
 export type ContentMap = {
   services: Service;
+  products: Product;
+  visuals: SiteVisual;
   projects: Project;
   blog: Article;
   testimonials: Testimonial;
   team: TeamMember;
+};
+
+export type Product = Project & {
+  name: string;
+  image_alt: string;
+  status: "live" | "development" | "available";
+  is_featured: boolean;
+  is_published: boolean;
+  sort_order: number;
+};
+export type SiteVisual = {
+  key: string;
+  image: string;
+  alt: string;
+  credit: string;
+  source_url: string;
 };

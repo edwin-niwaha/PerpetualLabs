@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/dm-sans";
 import "./globals.css";
@@ -20,9 +21,10 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  await connection();
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body id="top">

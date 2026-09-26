@@ -1,4 +1,5 @@
 import "server-only";
+import { apiUrl } from "./api-url";
 import type { ContentMap } from "./types";
 import { chooseContent } from "./company-content";
 
@@ -19,31 +20,42 @@ export async function api<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const headers = new Headers(options.headers);
+  if (!headers.has("Content-Type") && !(options.body instanceof FormData))
+    headers.set("Content-Type", "application/json");
   let response: Response;
   try {
-    response = await fetch(new URL(path, base), {
+    response = await fetch(apiUrl(path, base), {
       ...options,
       cache: "no-store",
       signal: AbortSignal.timeout(
         options.method && options.method !== "GET" ? 30000 : 10000,
       ),
-      headers: { "Content-Type": "application/json", ...options.headers },
+      headers,
+      redirect: "error",
     });
   } catch {
     throw new ApiError(503, {
       detail: "We could not connect right now. Please try again shortly.",
     });
   }
+  if (response.status === 204) return undefined as T;
   const data = await response.json().catch(() => {
     throw new ApiError(502, {
       detail: "The service returned an invalid response.",
     });
   });
-  if (!response.ok) throw new ApiError(response.status, data);
+  if (!response.ok)
+    throw new ApiError(
+      response.status,
+      data && typeof data === "object" && !Array.isArray(data) ? data : {},
+    );
   return data as T;
 }
 export const endpoints = {
   services: "/api/services/list/",
+  products: "/api/projects/products/",
+  visuals: "/api/projects/visuals/",
   projects: "/api/projects/list/",
   blog: "/api/blog/blog-posts/",
   testimonials: "/api/testimonials/list/",

@@ -12,10 +12,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "created_at", "category")
+    list_display = ("title", "author", "is_published", "published_at", "category")
     prepopulated_fields = {"slug": ("title",)}
-    search_fields = ("title", "author", "category")
-    list_filter = ("category", "created_at")
+    search_fields = ("title", "author__username", "category__name")
+    list_filter = ("is_published", "category", "published_at")
+    date_hierarchy = "published_at"
 
 
 @admin.register(NewsletterSubscriber)

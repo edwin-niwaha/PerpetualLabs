@@ -27,11 +27,11 @@ export async function authenticated<T>(
   const jar = await cookies();
   const access = jar.get("pl_access")?.value;
   const refresh = jar.get("pl_refresh")?.value;
-  const request = (token: string) =>
-    api<T>(path, {
-      ...init,
-      headers: { ...init.headers, Authorization: `Bearer ${token}` },
-    });
+  const request = (token: string) => {
+    const headers = new Headers(init.headers);
+    headers.set("Authorization", `Bearer ${token}`);
+    return api<T>(path, { ...init, headers });
+  };
   if (access) {
     try {
       return await request(access);

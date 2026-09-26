@@ -4,69 +4,101 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { content } from "@/lib/api";
 import { safeImage } from "@/lib/site";
-import { ContactCta } from "@/components/ui";
+import { journalDate, readingTime } from "@/lib/journal";
+import { JournalMarkdown } from "@/components/journal-markdown";
+import { JournalShare } from "@/components/journal-share";
 async function getArticle(slug: string) {
   const data = await content("blog");
-  if (data.unavailable) throw new Error("Article content unavailable");
-  return data.items.find((item) => item.slug === slug);
+  if (data.unavailable) throw new Error("Journal unavailable");
+  return {
+    item: data.items.find((a) => a.slug === slug),
+    articles: data.items,
+  };
 }
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const item = await getArticle((await params).slug);
-  return {
-    title: item?.title || "Article",
-    description: item?.excerpt.slice(0, 160),
-    openGraph: {
-      type: "article",
-      title: item?.title,
-      description: item?.excerpt.slice(0, 160),
-    },
-  };
+  const { item } = await getArticle((await params).slug);
+  return item
+    ? {
+        title: item.title,
+        description: item.excerpt,
+        openGraph: {
+          type: "article",
+          title: item.title,
+          description: item.excerpt,
+          publishedTime: item.published_at || item.created_at,
+        },
+      }
+    : { title: "Entry not found" };
 }
-export default async function ArticleDetail({
+export default async function ArticlePage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const item = await getArticle((await params).slug);
+  const { item, articles } = await getArticle((await params).slug);
   if (!item) notFound();
   const image = safeImage(item.image);
+  const related = articles
+    .filter((a) => a.id !== item.id)
+    .sort(
+      (a, b) =>
+        Number(b.category === item.category) -
+        Number(a.category === item.category),
+    )
+    .slice(0, 3);
   return (
-    <>
-      <article className="shell detail-page">
-        <Link href="/blog" className="text-link">
-          ← Back to the journal
-        </Link>
-        <h1>{item.title}</h1>
-        <p className="detail-lead">{item.excerpt}</p>
-        <div className="detail-meta">
-          <span>By {item.author}</span>
-          <time dateTime={item.created_at}>
-            {new Date(item.created_at).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </time>
-          {item.category && <span>{item.category}</span>}
-        </div>
+    <div className="shell journal-reader">
+      <Link className="journal-back" href="/blog">
+        ← Back to the journal
+      </Link>
+      <article>
+        <header className="journal-reader-header">
+          <p className="journal-eyebrow">{item.category || "FIELD NOTES"}</p>
+          <h1>{item.title}</h1>
+          <p className="journal-deck">{item.excerpt}</p>
+          <div className="journal-meta">
+            <span>By {item.author}</span>
+            <time dateTime={item.published_at || item.created_at}>
+              {journalDate(item)}
+            </time>
+            <span>{readingTime(item.content)} min read</span>
+          </div>
+        </header>
         {image && (
-          <div className="detail-image">
+          <div className="journal-cover">
             <Image
               src={image}
-              alt={item.title}
+              alt=""
               fill
-              sizes="(max-width: 850px) 100vw, 850px"
               priority
+              sizes="(max-width: 900px) 100vw, 1000px"
             />
           </div>
         )}
-        <div className="prose">{item.content}</div>
+        <JournalMarkdown>{item.content}</JournalMarkdown>
+        <JournalShare />
       </article>
-      <ContactCta />
-    </>
+      {related.length > 0 && (
+        <section className="journal-related">
+          <p className="journal-eyebrow">KEEP EXPLORING</p>
+          <h2>Another page to turn.</h2>
+          <div>
+            {related.map((a) => (
+              <Link key={a.id} href={`/blog/${a.slug}`}>
+                <span>
+                  {a.category || "Field notes"} · {readingTime(a.content)} min
+                  read
+                </span>
+                <h3>{a.title} ↗</h3>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
   );
 }

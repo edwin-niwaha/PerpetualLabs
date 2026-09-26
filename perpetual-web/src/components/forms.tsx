@@ -24,7 +24,7 @@ type FieldProps = {
   multiline?: boolean;
   hint?: string;
 };
-function Field({
+export function Field({
   name,
   label,
   type = "text",
@@ -72,7 +72,7 @@ function Field({
     </div>
   );
 }
-function Status({ state }: { state: FormState }) {
+export function Status({ state }: { state: FormState }) {
   return state.message ? (
     <div
       role={state.ok ? "status" : "alert"}
@@ -83,15 +83,21 @@ function Status({ state }: { state: FormState }) {
     </div>
   ) : null;
 }
-function Submit({
+export function Submit({
   pending,
   children,
+  disabled = false,
 }: {
   pending: boolean;
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <button className="button form-submit" disabled={pending} type="submit">
+    <button
+      className="button form-submit"
+      disabled={pending || disabled}
+      type="submit"
+    >
       {pending ? "Please wait…" : children}
       {pending ? (
         <LoaderCircle size={18} className="spin" />
@@ -101,7 +107,13 @@ function Submit({
     </button>
   );
 }
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+export function AuthForm({
+  mode,
+  showRegistration = true,
+}: {
+  mode: "login" | "register";
+  showRegistration?: boolean;
+}) {
   const signup = mode === "register";
   const [state, action, pending] = useActionState(
     signup ? register : signIn,
@@ -153,13 +165,20 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           state={state}
         />
       )}
-      <Submit pending={pending}>{signup ? "Create account" : "Sign in"}</Submit>
-      <p className="form-alternative">
-        {signup ? "Already have an account?" : "New to Perpetual Labs?"}{" "}
-        <Link href={signup ? "/sign-in" : "/register"}>
-          {signup ? "Sign in" : "Create an account"}
+      {!signup && (
+        <Link className="text-link" href="/forgot-password">
+          Forgot password?
         </Link>
-      </p>
+      )}
+      <Submit pending={pending}>{signup ? "Create account" : "Sign in"}</Submit>
+      {(signup || showRegistration) && (
+        <p className="form-alternative">
+          {signup ? "Already have an account?" : "New to Perpetual Labs?"}{" "}
+          <Link href={signup ? "/sign-in" : "/register"}>
+            {signup ? "Sign in" : "Create an account"}
+          </Link>
+        </p>
+      )}
     </form>
   );
 }
@@ -169,8 +188,11 @@ export function ContactForm() {
     return (
       <div className="contact-success">
         <CheckCircle2 size={42} />
-        <h2>You’re on our radar.</h2>
+        <h2>Your inquiry is saved.</h2>
         <Status state={state} />
+        <Link className="text-link" href="/account">
+          Open client portal
+        </Link>
         <Link className="text-link" href="/">
           Back to home <ArrowUpRight size={18} />
         </Link>
@@ -249,6 +271,15 @@ export function ProfileForm({ profile }: { profile: Profile }) {
           state={state}
         />
       </div>
+      <Field
+        name="date_of_birth"
+        label="Date of birth"
+        type="date"
+        autoComplete="bday"
+        defaultValue={profile.date_of_birth || ""}
+        required={false}
+        state={state}
+      />
       <Field
         name="bio"
         label="A little about you"

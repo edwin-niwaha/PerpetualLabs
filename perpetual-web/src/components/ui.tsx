@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { websiteContent } from "@/lib/website-content";
 import { ArrowUpRight, ArrowRight, Plus } from "lucide-react";
 import type { ReactNode } from "react";
 export function Eyebrow({ children }: { children: ReactNode }) {
@@ -76,17 +77,15 @@ export function EmptyState({
     </div>
   );
 }
-export function ContactCta() {
+export async function ContactCta() {
+  const { section } = await websiteContent();
+  const copy = section("cta");
   return (
     <section className="shell cta-wrap">
       <div className="contact-cta">
         <div>
-          <Eyebrow>Make the next move</Eyebrow>
-          <h2>
-            Good things start
-            <br />
-            with a conversation.
-          </h2>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
+          <h2 className="preserve-lines">{copy.title}</h2>
         </div>
         <Link
           className="round-link"
@@ -95,7 +94,7 @@ export function ContactCta() {
         >
           <ArrowUpRight size={42} />
         </Link>
-        <span className="cta-note">Your idea. Our next conversation.</span>
+        <span className="cta-note">{copy.description}</span>
       </div>
     </section>
   );

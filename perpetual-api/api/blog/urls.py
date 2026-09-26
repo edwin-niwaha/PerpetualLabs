@@ -5,6 +5,7 @@ from . import views
 from .views import NewsletterSubscriberViewSet
 
 router = DefaultRouter()
+router.register("journal", views.JournalEditorViewSet, basename="journal-editor")
 router.register(
     r"subscribe", NewsletterSubscriberViewSet, basename="newsletter-subscriber"
 )

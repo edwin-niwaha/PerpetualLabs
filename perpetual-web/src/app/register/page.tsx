@@ -1,3 +1,4 @@
+import { SocialLogin } from "@/components/social-login";
 import type { Metadata } from "next";
 import { AuthForm } from "@/components/forms";
 import { Eyebrow } from "@/components/ui";
@@ -25,6 +26,7 @@ export default function Register() {
           at home.
         </h1>
         <p className="muted">Create your Perpetual Labs account.</p>
+        <SocialLogin />
         <AuthForm mode="register" />
       </div>
     </section>

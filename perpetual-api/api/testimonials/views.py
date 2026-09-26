@@ -10,5 +10,5 @@ from .serializers import TestimonialSerializer
 @permission_classes([AllowAny])
 def testimonials_list(request):
     testimonies = Testimonial.objects.all().order_by("-created_at")
-    serializer = TestimonialSerializer(testimonies, many=True)
+    serializer = TestimonialSerializer(testimonies, many=True, context={"request": request})
     return Response(serializer.data)

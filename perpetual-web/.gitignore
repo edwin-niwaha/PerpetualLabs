@@ -12,3 +12,12 @@ next-env.d.ts
 *.log
 .DS_Store
 /artifacts/
+
+!.env.production.example
+
+# Isolated validation builds
+.next-*/
+
+/test-results-*/
+
+!.env.railway.example

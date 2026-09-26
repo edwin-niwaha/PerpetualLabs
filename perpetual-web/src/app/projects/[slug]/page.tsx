@@ -7,7 +7,12 @@ import { safeImage, safeWebsite } from "@/lib/site";
 import { ContactCta } from "@/components/ui";
 import { ProjectArtwork } from "@/components/project-artwork";
 async function getProject(slug: string) {
-  const data = await content("projects");
+  const [data, products] = await Promise.all([
+    content("projects"),
+    content("products"),
+  ]);
+  const product = products.items.find((item) => item.slug === slug);
+  if (product) return product;
   if (data.unavailable) throw new Error("Project content unavailable");
   return data.items.find((item) => item.slug === slug);
 }
@@ -30,6 +35,7 @@ export default async function ProjectDetail({
   const item = await getProject((await params).slug);
   if (!item) notFound();
   const image = safeImage(item.image);
+  const status = "status" in item ? item.status : null;
   const website = safeWebsite(item.website_url);
   return (
     <>
@@ -41,6 +47,9 @@ export default async function ProjectDetail({
         <p className="detail-lead">{item.description}</p>
         <div className="detail-meta">
           {item.project_type && <span>{item.project_type}</span>}
+          {status === "development" && (
+            <span>In development · Not yet hosted</span>
+          )}
           {item.completion_date && (
             <span>
               Completed{" "}
@@ -61,6 +70,7 @@ export default async function ProjectDetail({
               alt={item.title}
               fill
               sizes="(max-width: 850px) 100vw, 850px"
+              unoptimized
               priority
             />
           ) : (

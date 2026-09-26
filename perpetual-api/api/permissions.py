@@ -1,0 +1,10 @@
+from rest_framework.permissions import SAFE_METHODS, BasePermission
+
+
+class StaffWritePermission(BasePermission):
+    """Public content is readable; only staff can change it."""
+
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS or bool(
+            request.user and request.user.is_staff
+        )

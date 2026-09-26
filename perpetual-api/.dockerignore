@@ -1,0 +1,13 @@
+.git
+.venv
+.venv*
+.env
+.env.*
+*.log
+*.sqlite3
+__pycache__
+**/__pycache__
+*.pyc
+.ruff_cache
+media
+staticfiles

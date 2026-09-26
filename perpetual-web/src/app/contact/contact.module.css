@@ -1,0 +1,348 @@
+.page {
+  width: min(1280px, calc(100% - 96px));
+  margin-inline: auto;
+  padding-block: 60px 64px;
+}
+.intro {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  align-items: end;
+  gap: 48px;
+  margin-bottom: 42px;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #56634a;
+  font-size: 10px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.eyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #67843b;
+  flex-shrink: 0;
+}
+.intro h1 {
+  max-width: 700px;
+  margin-top: 20px;
+  font-size: clamp(40px, 4.8vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+  white-space: pre-line;
+}
+.lead {
+  max-width: 350px;
+  justify-self: end;
+  padding-bottom: 5px;
+  font-size: 15px;
+  line-height: 1.85;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #dedfd3;
+  border-radius: 28px;
+  background: #edeee5;
+}
+.aside {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 42px);
+  border-radius: 18px;
+  color: #f7f8f0;
+  background:
+    radial-gradient(ellipse at 0% 100%, #40553b 0%, transparent 65%), #243728;
+}
+.asideTop,
+.formHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.asideTop {
+  color: #d0f477;
+}
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 1.7;
+}
+.aside h2 {
+  margin: 38px 0 18px;
+  font-size: clamp(29px, 2.8vw, 40px);
+  line-height: 1.18;
+  letter-spacing: -0.045em;
+}
+.aside h2 em {
+  color: #d6e9b9;
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+.asideCopy {
+  color: #c9d2c4;
+  max-width: 300px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.methods:global(.contact-methods) {
+  display: grid;
+  gap: 0;
+  margin-block: 28px;
+}
+.methods > a,
+.methods > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-block: 17px;
+  border-bottom: 1px solid #ffffff21;
+  min-width: 0;
+}
+.methods > a > div,
+.methods > div > div {
+  min-width: 0;
+  flex: 1;
+}
+.methods > a > svg {
+  margin-left: auto;
+  color: #b9cba5;
+}
+.methods span {
+  color: #bdcdb5;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+.methods .icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid #ffffff25;
+  color: #d0f477;
+}
+.methods .icon svg {
+  margin: 0;
+}
+.methods strong,
+.methods p {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 450;
+  color: #f7f8f0;
+  overflow-wrap: anywhere;
+}
+.methods a:hover strong {
+  color: #d0f477;
+}
+.aside a:focus-visible {
+  outline-color: #d0f477;
+}
+.whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 13px 16px;
+  border-radius: 100px;
+  background: #d0f477;
+  color: #243728;
+  font-size: 12px;
+  font-weight: 600;
+}
+.whatsapp:hover {
+  background: #e1ffa1;
+  transform: translateY(-2px);
+}
+.whatsapp > svg:last-child {
+  margin-left: auto;
+}
+.signature {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 32px;
+  margin-top: auto;
+  font-size: 9px;
+  color: #bac9b2;
+}
+.signature > span:first-child {
+  color: #eff5e7;
+  font-weight: 600;
+}
+.formPanel {
+  min-width: 0;
+  padding: clamp(28px, 3.5vw, 48px);
+  border-radius: 18px;
+  background: #fffef9;
+}
+.formHeading {
+  color: #637450;
+  margin-bottom: 26px;
+}
+.formNumber {
+  color: #73796b;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 9px;
+}
+.formPanel > h2 {
+  max-width: 370px;
+  font-size: clamp(29px, 2.8vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -0.05em;
+}
+.formDescription {
+  margin: 16px 0 30px;
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 400px;
+}
+.formPanel :global(.form-stack) {
+  gap: 24px;
+}
+.formPanel :global(.field input),
+.formPanel :global(.field textarea) {
+  background: #f6f7f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.formPanel :global(.field input:focus-visible),
+.formPanel :global(.field textarea:focus-visible) {
+  outline-offset: 3px;
+}
+.formPanel :global(.field textarea) {
+  min-height: 155px;
+}
+.formPanel :global(.form-submit) {
+  border-radius: 100px;
+  min-width: 180px;
+  background: #243728;
+}
+.formPanel :global(.form-submit:hover) {
+  background: #40553b;
+}
+.formPanel :global(.form-note) {
+  font-size: 11px;
+  max-width: 450px;
+}
+.closing {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 30px;
+  color: #637054;
+  font-size: 11px;
+}
+.closing em {
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+.closing > span:last-child {
+  display: flex;
+  gap: 16px;
+}
+.closing i {
+  font-style: normal;
+  color: #849273;
+}
+@media (max-width: 1050px) {
+  .page {
+    width: calc(100% - 56px);
+  }
+  .layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .aside,
+  .formPanel {
+    padding: 28px;
+  }
+  .formNumber {
+    display: none;
+  }
+  .formPanel :global(.form-row) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    width: calc(100% - 36px);
+    padding-block: 36px 40px;
+  }
+  .intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  .intro h1 {
+    max-width: 560px;
+    margin-top: 16px;
+  }
+  .lead {
+    justify-self: start;
+    max-width: 480px;
+    font-size: 14px;
+  }
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 8px;
+    border-radius: 22px;
+    gap: 8px;
+  }
+  .formPanel {
+    grid-row: 1;
+  }
+  .aside,
+  .formPanel {
+    padding: 28px 24px;
+    border-radius: 15px;
+  }
+  .aside h2 {
+    margin-top: 26px;
+  }
+  .formHeading {
+    margin-bottom: 20px;
+  }
+  .closing {
+    margin-top: 24px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 380px) {
+  .aside,
+  .formPanel {
+    padding-inline: 18px;
+  }
+  .methods > a,
+  .methods > div {
+    gap: 10px;
+  }
+  .whatsapp {
+    font-size: 11px;
+    padding-inline: 12px;
+    gap: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page a,
+  .page button {
+    transition: none;
+  }
+}

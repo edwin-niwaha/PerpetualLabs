@@ -1,0 +1,15 @@
+.git
+node_modules
+.next
+.next-*
+.env
+.env.*
+*.log
+*.tsbuildinfo
+artifacts
+playwright-report
+test-results
+test-results-*
+coverage
+out
+build

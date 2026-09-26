@@ -1,12 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { execFileSync } from "node:child_process";
-import path from "node:path";
-const python = path.resolve(
-  "../perpetual-api/.venv-web",
-  process.platform === "win32" ? "Scripts/python.exe" : "bin/python",
-);
+import { pythonFixture } from "./helpers/python";
 function fixture(action: string) {
-  execFileSync(python, ["scripts/e2e-content.py", action], { timeout: 30000 });
+  pythonFixture("scripts/e2e-content.py", [action]);
 }
 test.beforeAll(() => fixture("seed"));
 test.afterAll(() => fixture("cleanup"));

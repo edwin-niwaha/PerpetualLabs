@@ -1,3 +1,4 @@
+# Tested API runtime on Python 3.12. Regenerate from the supported direct requirements.
 asgiref==3.12.1
 certifi==2026.7.22
 charset-normalizer==3.5.1
@@ -25,3 +26,15 @@ tzdata==2026.4
 uritemplate==4.2.0
 urllib3==2.8.0
 whitenoise==6.12.0
+gunicorn==23.0.0 ; sys_platform != "win32"
+
+# Google OAuth and token verification
+google-auth-oauthlib==1.4.1
+google-auth==2.58.1
+requests-oauthlib==2.0.0
+oauthlib==3.3.1
+cryptography==50.0.1
+cffi==2.1.1
+pycparser==3.0
+pyasn1==0.6.4
+pyasn1-modules==0.4.2

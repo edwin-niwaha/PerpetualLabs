@@ -1,9 +1,15 @@
 import { Plus } from "lucide-react";
-import { questions } from "@/lib/company-content";
+import { websiteContent } from "@/lib/website-content";
 import { SectionHeading } from "./ui";
-export function Faq() {
+export async function Faq() {
+  const { faqs: questions } = await websiteContent();
+  if (!questions.length) return null;
   return (
-    <section className="shell section faq-section">
+    <section
+      id="frequently-asked-questions"
+      className="shell section faq-section"
+      aria-label="Frequently asked questions"
+    >
       <SectionHeading
         label="Before we begin"
         title="Good questions. Clear answers."
