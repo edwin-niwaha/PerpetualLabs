@@ -17,11 +17,13 @@ Create a Railway project with PostgreSQL (named `Postgres` below) and two empty 
 | Root Directory   | `/perpetual-api`                           | `/perpetual-web`                      |
 | Config File Path | `/perpetual-api/railway.json`              | `/perpetual-web/railway.json`         |
 | Watch Paths      | `/perpetual-api/**`                        | `/perpetual-web/**`                   |
-| Build            | `python manage.py collectstatic --noinput` | `npm run build:clean`                 |
+| Build            | `python manage.py collectstatic --noinput` | `npm run build`                 |
 | Start            | Gunicorn, from checked-in config           | `npm run start -- --hostname 0.0.0.0` |
 | Health check     | `/health/`                                 | `/health`                             |
 
 Build/start/health commands are already defined in the config files. The web's `railpack.json` installs from the lockfile with `npm ci --include=dev`; Node 24 and Python 3.12 are selected in the projects. Keep build dependencies enabled: TypeScript, Tailwind, and the React compiler are needed during `next build`.
+
+Use `npm run build` on Railway. Railpack mounts `.next/cache` as a build cache; `npm run build:clean` tries to remove that mounted directory and fails with `EBUSY`. Keep the clean-build command for local use.
 
 If each application is in its own GitHub repository instead, use `/` as Root Directory and `/railway.json` as Config File Path, and adjust Watch Paths accordingly.
 
