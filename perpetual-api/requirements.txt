@@ -1,2 +1,41 @@
-# Supported API runtime. Install the tested versions with: python -m pip install -r requirements.txt
--r requirements-web.lock.txt
+# Pinned API runtime for Python 3.12. Keep self-contained for Railway/Railpack.
+# Regenerate these pins from requirements-web.txt when updating dependencies.
+asgiref==3.12.1
+certifi==2026.7.22
+charset-normalizer==3.5.1
+cloudinary==1.46.2
+dj-database-url==3.1.2
+Django==5.2.17
+django-cloudinary-storage==0.3.0
+django-cors-headers==4.9.0
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+drf-yasg==1.21.15
+idna==3.20
+inflection==0.5.1
+packaging==26.3
+pillow==12.3.0
+psycopg2-binary==2.9.13
+PyJWT==2.15.0
+python-dotenv==1.2.3
+pytz==2026.4
+PyYAML==6.0.3
+requests==2.34.2
+six==1.17.0
+sqlparse==0.6.0
+tzdata==2026.4
+uritemplate==4.2.0
+urllib3==2.8.0
+whitenoise==6.12.0
+gunicorn==23.0.0 ; sys_platform != "win32"
+
+# Google OAuth and token verification
+google-auth-oauthlib==1.4.1
+google-auth==2.58.1
+requests-oauthlib==2.0.0
+oauthlib==3.3.1
+cryptography==50.0.1
+cffi==2.1.1
+pycparser==3.0
+pyasn1==0.6.4
+pyasn1-modules==0.4.2

@@ -7,6 +7,28 @@ from django.test import SimpleTestCase, override_settings
 
 
 class RailwayDeploymentTests(SimpleTestCase):
+    def test_install_manifest_is_self_contained_and_pinned(self):
+        from packaging.requirements import Requirement
+
+        manifest = Path(__file__).resolve().parents[1] / "requirements.txt"
+        dependencies = {}
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            # Parsing rejects -r/-c includes and local-path install directives.
+            requirement = Requirement(line)
+            self.assertIsNone(requirement.url)
+            self.assertTrue(requirement.specifier)
+            self.assertTrue(
+                all(spec.operator == "==" for spec in requirement.specifier)
+            )
+            dependencies[requirement.name.lower()] = requirement
+        self.assertIn("django", dependencies)
+        gunicorn = dependencies["gunicorn"]
+        self.assertTrue(gunicorn.marker.evaluate({"sys_platform": "linux"}))
+        self.assertFalse(gunicorn.marker.evaluate({"sys_platform": "win32"}))
+
     def test_gunicorn_uses_assigned_port_without_logging_query_secrets(self):
         with patch.dict(os.environ, {"PORT": "9123", "WEB_CONCURRENCY": "3"}):
             config = runpy.run_path(

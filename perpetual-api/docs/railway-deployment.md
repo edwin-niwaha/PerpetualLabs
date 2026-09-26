@@ -6,7 +6,7 @@ Deploy this folder as its own Railway service, with PostgreSQL and the separate 
 - Config File Path: `/perpetual-api/railway.json`
 - Variables checklist: `.env.railway.example`
 - Python: 3.12, selected by `.python-version`
-- Locked dependencies: `requirements.txt` includes `requirements-web.lock.txt`
+- Locked dependencies: `requirements.txt` contains the complete pinned dependency list, with no nested file includes
 - Build: `python manage.py collectstatic --noinput`
 - Pre-deploy: `python manage.py migrate --noinput && python manage.py createcachetable`
 - Start: `gunicorn config.wsgi:application --config gunicorn.conf.py`
@@ -15,3 +15,5 @@ Deploy this folder as its own Railway service, with PostgreSQL and the separate 
 All required production variables must be set before building. Keep `TRUST_PROXY_HEADERS=True` behind Railway ingress, use the public HTTPS web/API origins, and reference Railway PostgreSQL with `${{Postgres.DATABASE_URL}}`. Use the existing Resend and Cloudinary services. Gunicorn uses Railway's `PORT` and logs paths without query strings or request bodies.
 
 Create the administrator once with `python manage.py createsuperuser` in the deployed API's shell. Existing local data and media are not transferred by pushing source to GitHub.
+
+Railpack copies the dependency manifest before the rest of the source. Keep `requirements.txt` self-contained so installation does not depend on files missing from that build layer. `requirements-web.lock.txt` remains a compatibility wrapper for older local install commands.

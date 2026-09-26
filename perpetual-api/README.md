@@ -18,7 +18,7 @@ The **Django 5.2 / Django REST Framework** backend for the [Perpetual Labs web a
 | -------------------- | ------------------------------------------------------------------------------ |
 | Python               | 3.12                                                                           |
 | Framework            | Django 5.2, DRF, Simple JWT                                                    |
-| Dependencies         | Tested versions in `requirements-web.lock.txt`, included by `requirements.txt` |
+| Dependencies         | Pinned, self-contained `requirements.txt`; `requirements-web.lock.txt` is a compatibility entry point |
 | Development database | Project-local SQLite via `config.local`                                        |
 | Production database  | PostgreSQL via `DATABASE_URL`                                                  |
 | Media                | Cloudinary in development and production                                       |
