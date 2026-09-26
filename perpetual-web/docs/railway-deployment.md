@@ -17,7 +17,7 @@ Create a Railway project with PostgreSQL (named `Postgres` below) and two empty 
 | Root Directory   | `/perpetual-api`                           | `/perpetual-web`                      |
 | Config File Path | `/perpetual-api/railway.json`              | `/perpetual-web/railway.json`         |
 | Watch Paths      | `/perpetual-api/**`                        | `/perpetual-web/**`                   |
-| Build            | `python manage.py collectstatic --noinput` | `npm run build:clean`                       |
+| Build            | `python manage.py collectstatic --noinput` | `npm run build:clean`                 |
 | Start            | Gunicorn, from checked-in config           | `npm run start -- --hostname 0.0.0.0` |
 | Health check     | `/health/`                                 | `/health`                             |
 
@@ -41,9 +41,9 @@ Use `perpetual-api/.env.railway.example` as a checklist; enter values in Railway
 | `SECRET_KEY`                                                           | A unique random value, at least 50 characters                       |
 | `DATABASE_URL`                                                         | `${{Postgres.DATABASE_URL}}` (adjust the service name if necessary) |
 | `DB_SSL_REQUIRE`                                                       | `True` for Railway's SSL-enabled PostgreSQL template                |
-| `SITE_URL`                                                             | `https://YOUR-API.up.railway.app`                                   |
+| `SITE_URL`                                                             | `https://perpetuallabs-production.up.railway.app`                   |
 | `FRONTEND_URL`                                                         | `https://YOUR-WEB.up.railway.app`                                   |
-| `ALLOWED_HOSTS`                                                        | `YOUR-API.up.railway.app,healthcheck.railway.app`                   |
+| `ALLOWED_HOSTS`                                                        | `perpetuallabs-production.up.railway.app,healthcheck.railway.app`   |
 | `TRUST_PROXY_HEADERS`                                                  | `True` behind Railway ingress                                       |
 | `RESEND_API_KEY`                                                       | Your Resend API key                                                 |
 | `RESEND_FROM_EMAIL`                                                    | Sender address on your verified Resend domain                       |
@@ -62,13 +62,13 @@ Optional: set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` together, and regist
 
 Use `perpetual-web/.env.railway.example`:
 
-| Variable                             | Value                                                      |
-| ------------------------------------ | ---------------------------------------------------------- |
-| `API_BASE_URL`                       | Public API HTTPS origin: `https://YOUR-API.up.railway.app` |
-| `NEXT_PUBLIC_SITE_URL`               | Public web HTTPS origin: `https://YOUR-WEB.up.railway.app` |
-| `DJANGO_ADMIN_URL`                   | `https://YOUR-API.up.railway.app/admin/`                   |
-| `NODE_ENV`                           | `production`                                               |
-| `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | Stable base64-encoded 32-byte random key                   |
+| Variable                             | Value                                                                      |
+| ------------------------------------ | -------------------------------------------------------------------------- |
+| `API_BASE_URL`                       | Public API HTTPS origin: `https://perpetuallabs-production.up.railway.app` |
+| `NEXT_PUBLIC_SITE_URL`               | Public web HTTPS origin: `https://YOUR-WEB.up.railway.app`                 |
+| `DJANGO_ADMIN_URL`                   | `https://perpetuallabs-production.up.railway.app/admin/`                   |
+| `NODE_ENV`                           | `production`                                                               |
+| `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | Stable base64-encoded 32-byte random key                                   |
 
 Generate the action key with `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"`. Use the same value at build and runtime and across replicas. The web service reads `PORT` automatically. Do not set a permanent `NEXT_DIST_DIR`; the standard Railway build uses `.next`.
 
@@ -112,7 +112,7 @@ A hosted Railway build, real PostgreSQL connection, real email delivery, and Clo
 
 ## Configured domains and private local files
 
-The production website is `https://perpetuallabs.tech`. The API configuration uses `https://api.perpetuallabs.tech`: add that custom domain to the API service, the main domain to the web service, and create the DNS records Railway provides before using these origins.
+The production website is `https://perpetuallabs.tech`. The API configuration uses `https://perpetuallabs-production.up.railway.app`: use the generated Railway domain for the API service, add `perpetuallabs.tech` to the web service, and configure the web domain’s DNS records as Railway directs.
 
 - `perpetual-api/.env` remains the local development configuration, preserving existing credentials. Use `python manage_local.py runserver`.
 - `perpetual-api/.env.production` is a **private Railway API import file**, containing the existing mail/storage/Google credentials and a separate generated production Django secret. Paste its contents into the API service Variables Raw Editor. Django does not automatically load this file locally. The PostgreSQL reference expects a Railway service named `Postgres`.

@@ -53,7 +53,7 @@ Open [localhost:3000](http://localhost:3000). Sign in at `/sign-in`. Staff accou
 
 Use `.env.local` for local origins and `.env.production.local` for local production-build overrides. Shared private settings may live in `.env`. Next.js gives `.env.production.local` precedence over `.env.local` for production; hosting environment variables take precedence over files.
 
-Copy production settings from [.env.railway.example](.env.railway.example) into Railway Variables. The configured production origins are `https://perpetuallabs.tech` and `https://api.perpetuallabs.tech`; they require the corresponding domain/DNS setup. Never put API credentials into `NEXT_PUBLIC_*` variables or commit private environment files.
+Copy production settings from [.env.railway.example](.env.railway.example) into Railway Variables. The configured production origins are `https://perpetuallabs.tech` and `https://perpetuallabs-production.up.railway.app`; use the generated Railway API domain and configure the custom website domain’s DNS. Never put API credentials into `NEXT_PUBLIC_*` variables or commit private environment files.
 
 ## Pages and workspaces
 

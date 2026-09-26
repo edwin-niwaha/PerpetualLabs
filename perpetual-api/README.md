@@ -102,7 +102,7 @@ Paths below are relative to the API origin. JWT-authenticated clients send `Auth
 | `/api/auth/forgot-password/`                                               | POST               | Generic reset-request response                             |
 | `/api/auth/reset-password/`                                                | POST               | Validate reset credentials and replace password            |
 | `/api/auth/profile/`                                                       | GET, PATCH         | Current user's profile                                     |
-| `/api/auth/profile/picture/`                                               | PUT, DELETE       | Current user's picture                                     |
+| `/api/auth/profile/picture/`                                               | PUT, DELETE        | Current user's picture                                     |
 | `/api/auth/change-password/`                                               | POST               | Verify current password and change it                      |
 | `/api/auth/portal/`                                                        | GET                | Current user's portal                                      |
 | `/api/auth/notifications/<id>/`                                            | PATCH              | Mark an owned notification read/unread                     |
@@ -156,7 +156,7 @@ Follow the [full deployment guide](../perpetual-web/docs/railway-deployment.md).
 | Start                      | `gunicorn config.wsgi:application --config gunicorn.conf.py`              |
 | Health check               | `/health/`                                                                |
 
-Configure PostgreSQL, Resend, Cloudinary, and public origins before deployment. Railway supplies `PORT`; include `healthcheck.railway.app` in `ALLOWED_HOSTS`. The configured API domain is `api.perpetuallabs.tech`, paired with `perpetuallabs.tech` for the web service; connect these domains and their DNS records on the host.
+Configure PostgreSQL, Resend, Cloudinary, and public origins before deployment. Railway supplies `PORT`; include `healthcheck.railway.app` in `ALLOWED_HOSTS`. The configured API domain is `perpetuallabs-production.up.railway.app`, paired with `perpetuallabs.tech` for the web service; use the generated API domain and connect the custom website domain with the DNS records Railway provides.
 
 Run `python manage.py createsuperuser` once in the deployed API service. Run `python manage.py check --deploy` against production settings. Static files are generated during build; uploads remain in Cloudinary. Back up PostgreSQL before future schema changes.
 
