@@ -134,8 +134,6 @@ class TeamMemberAdmin(admin.ModelAdmin):
         )
 
 
-
-
 @admin.register(EmailDelivery)
 class EmailDeliveryAdmin(admin.ModelAdmin):
     list_display = (

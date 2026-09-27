@@ -26,6 +26,7 @@ class RailwayDeploymentTests(SimpleTestCase):
             dependencies[requirement.name.lower()] = requirement
         self.assertIn("django", dependencies)
         gunicorn = dependencies["gunicorn"]
+        self.assertIsNotNone(gunicorn.marker, "Gunicorn must exclude Windows installs.")
         self.assertTrue(gunicorn.marker.evaluate({"sys_platform": "linux"}))
         self.assertFalse(gunicorn.marker.evaluate({"sys_platform": "win32"}))
 

@@ -97,7 +97,7 @@ class WebsiteContentTests(APITestCase):
             ],
             ["First", "Second"],
         )
-        path = f'/api/content/faqs/{first.data["id"]}/'
+        path = f"/api/content/faqs/{first.data['id']}/"
         self.client.patch(path, {"is_published": False}, format="json")
         self.assertEqual(len(self.client.get("/api/content/").data["faqs"]), 1)
         self.assertEqual(self.client.delete(path).status_code, 204)
