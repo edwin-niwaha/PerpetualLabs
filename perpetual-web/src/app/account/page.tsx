@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   UserRound,
 } from "lucide-react";
+import { profileDisplay } from "@/lib/profile-display";
 import { currentProfile } from "@/lib/session";
 import { signOut } from "@/lib/actions";
 import { ClientPortal } from "@/components/client-portal";
@@ -27,14 +28,8 @@ export default async function Account() {
   const profile = await currentProfile();
   if (!profile) redirect("/sign-in");
   const picture = safeImage(profile.profile_picture || undefined);
-  const displayName =
-    [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
-    profile.username;
-  const initials = (
-    profile.first_name
-      ? `${profile.first_name[0]}${profile.last_name?.[0] || ""}`
-      : profile.username.slice(0, 2)
-  ).toUpperCase();
+  const { generatedUsername, displayName, greeting, initials } =
+    profileDisplay(profile);
   return (
     <div className={styles.workspace}>
       <header className={styles.header}>
@@ -42,7 +37,7 @@ export default async function Account() {
           <p className={styles.eyebrow}>
             <UserRound size={15} aria-hidden="true" /> Client portal
           </p>
-          <h1>Hello, {profile.first_name || profile.username}.</h1>
+          <h1>Hello, {greeting}.</h1>
           <p>
             Your conversations, notifications, and next steps — all in one
             place.
@@ -81,10 +76,12 @@ export default async function Account() {
           </div>
           <div className={styles.identityDetails}>
             <dl>
-              <div>
-                <dt>Username</dt>
-                <dd>@{profile.username}</dd>
-              </div>
+              {!generatedUsername && (
+                <div>
+                  <dt>Username</dt>
+                  <dd>@{profile.username}</dd>
+                </div>
+              )}
               <div>
                 <dt>Email address</dt>
                 <dd>{profile.email || "No email address provided"}</dd>
@@ -92,7 +89,11 @@ export default async function Account() {
             </dl>
             <p className={styles.fixedNote}>
               <LockKeyhole size={14} aria-hidden="true" />
-              <span>Username and email are fixed for this account.</span>
+              <span>
+                {generatedUsername
+                  ? "Your email is fixed. You can update your name in Profile settings."
+                  : "Username and email are fixed for this account."}
+              </span>
             </p>
           </div>
           <Link className={styles.websiteLink} href="/account/change-password">

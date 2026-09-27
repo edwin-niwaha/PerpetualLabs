@@ -8,6 +8,12 @@ Commit the source, migrations, lockfiles, `railway.json`, `railpack.json` (web),
 
 GitHub stores source, not your local database or uploads. Existing local content is not automatically copied to production. The database migrations seed initial site/team/service content, but journal entries, client accounts, uploads, and later edits need a deliberate data migration or can be recreated through the deployed administration tools.
 
+### Portfolio images
+
+Include `public/images/projects/`, `src/lib/project-images.json`, and `scripts/check-project-images.mjs` in the commit. These portfolio images are served directly by the frontend at `/images/projects/...`; they do not require Django media, Cloudinary, or files from a developer computer. The catalog cards and detail pages prefer this bundled artwork for the named projects. To replace their artwork, update the bundled file or its manifest entry.
+
+`npm run build` verifies every manifest image exists and is nonempty before compiling. Use that command in deployment so missing assets fail the build. The existing `next start` deployment serves the public directory. If switching to a custom standalone container, explicitly copy `public` into its runtime directory as well. Product records for the four web products still come from the production database; bundling images does not migrate that content.
+
 ## 2. Create services before the first deployment
 
 Create a Railway project with PostgreSQL (named `Postgres` below) and two empty services named `api` and `web`. Connect both services to the same GitHub repository and deployment branch. Set these values in each service's Settings:

@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ArrowDown, ArrowUpRight, Target, Telescope } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Target,
+  Telescope,
+  Code2,
+  Network,
+  Handshake,
+} from "lucide-react";
 import Link from "next/link";
 import { ContactCta } from "@/components/ui";
 import { content } from "@/lib/api";
 import { safeImage } from "@/lib/site";
 import { websiteContent } from "@/lib/website-content";
 import styles from "./about.module.css";
+import defaults from "@/lib/site-defaults.json";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Meet Perpetual Labs: a Kampala-based team building websites, software, and reliable IT solutions since 2020.",
+    "Meet Perpetual Labs. Discover our mission, vision, and the people building websites, software, and reliable IT solutions in Kampala.",
 };
 
 export default async function About() {
@@ -27,6 +36,10 @@ export default async function About() {
         aria-labelledby="about-title"
       >
         <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>
+            <span aria-hidden="true" />
+            About Perpetual Labs
+          </p>
           <h1 id="about-title">{intro.title}</h1>
           <p className={styles.lead}>{intro.description}</p>
           <div className={styles.actions}>
@@ -34,9 +47,46 @@ export default async function About() {
               Let’s build something{" "}
               <ArrowUpRight size={18} aria-hidden="true" />
             </Link>
-            <a href="#our-story" className={styles.storyLink}>
-              Our story <ArrowDown size={17} aria-hidden="true" />
+            <a href="#our-purpose" className={styles.storyLink}>
+              Our mission & vision <ArrowDown size={17} aria-hidden="true" />
             </a>
+          </div>
+        </div>
+        <div className={styles.heroVisual}>
+          <div className={styles.visualHeader}>
+            <span>THINK. BUILD. SUPPORT.</span>
+            <ArrowUpRight size={22} aria-hidden="true" />
+          </div>
+          <div className={styles.orbit} aria-hidden="true">
+            <span className={styles.orbitRing} />
+            <span className={styles.orbitRing} />
+            <span className={styles.orbitRing} />
+            <span className={styles.orbitCore}>
+              pl<span>perpetual labs</span>
+            </span>
+            <span className={styles.orbitDot} />
+          </div>
+          <div className={styles.visualCopy}>
+            <p>Grounded in {company.location}.</p>
+            <h2>
+              Built around
+              <br />
+              your possibilities.
+            </h2>
+          </div>
+          <div className={styles.visualTags}>
+            <span>
+              <Code2 size={14} aria-hidden="true" />
+              Build
+            </span>
+            <span>
+              <Network size={14} aria-hidden="true" />
+              Connect
+            </span>
+            <span>
+              <Handshake size={14} aria-hidden="true" />
+              Support
+            </span>
           </div>
         </div>
       </section>
@@ -50,12 +100,59 @@ export default async function About() {
       </div>
 
       <section
+        id="our-purpose"
+        className={`${styles.shell} ${styles.purposeSection}`}
+        aria-labelledby="purpose-title"
+      >
+        <div className={styles.sectionIntro}>
+          <div>
+            <p className={styles.eyebrow}>01 / Why we do what we do</p>
+            <h2 id="purpose-title">
+              A clear purpose.
+              <br />
+              <em>A shared direction.</em>
+            </h2>
+          </div>
+          <p>
+            Our mission shapes the work we do today. Our vision keeps us looking
+            toward what technology can make possible.
+          </p>
+        </div>
+        <div className={styles.purpose}>
+          <article className={styles.mission} aria-labelledby="mission-title">
+            <div className={styles.cardTop}>
+              <span className={styles.eyebrow}>What drives us</span>
+              <Target size={28} strokeWidth={1.4} aria-hidden="true" />
+            </div>
+            <h2 id="mission-title">Our mission.</h2>
+            <p>{company.mission?.trim() || defaults.settings.mission}</p>
+            <div className={styles.purposeNote}>
+              Useful tools. Confident businesses.
+              <ArrowUpRight size={19} aria-hidden="true" />
+            </div>
+          </article>
+          <article className={styles.vision} aria-labelledby="vision-title">
+            <div className={styles.cardTop}>
+              <span className={styles.eyebrow}>Where we’re going</span>
+              <Telescope size={28} strokeWidth={1.4} aria-hidden="true" />
+            </div>
+            <h2 id="vision-title">Our vision.</h2>
+            <p>{company.vision?.trim() || defaults.settings.vision}</p>
+            <div className={styles.purposeNote}>
+              Stronger foundations. New possibilities.
+              <ArrowUpRight size={19} aria-hidden="true" />
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
         id="our-story"
         className={`${styles.shell} ${styles.story}`}
         aria-labelledby="story-title"
       >
         <div>
-          <p className={styles.eyebrow}>01 / Our story</p>
+          <p className={styles.eyebrow}>02 / Our story</p>
           <h2 id="story-title">
             A practical partner.
             <br />
@@ -89,36 +186,6 @@ export default async function About() {
         </div>
       </section>
 
-      <section
-        className={`${styles.shell} ${styles.purpose}`}
-        aria-label="Our mission and vision"
-      >
-        <article className={styles.mission}>
-          <div className={styles.cardTop}>
-            <span className={styles.eyebrow}>Our mission</span>
-            <Target size={24} strokeWidth={1.4} aria-hidden="true" />
-          </div>
-          <h2>
-            Make technology
-            <br />
-            work for business.
-          </h2>
-          <p>{company.mission}</p>
-        </article>
-        <article className={styles.vision}>
-          <div className={styles.cardTop}>
-            <span className={styles.eyebrow}>Our vision</span>
-            <Telescope size={24} strokeWidth={1.4} aria-hidden="true" />
-          </div>
-          <h2>
-            A stronger foundation
-            <br />
-            for what’s next.
-          </h2>
-          <p>{company.vision}</p>
-        </article>
-      </section>
-
       {values.length > 0 && (
         <section
           className={`${styles.shell} ${styles.values}`}
@@ -126,7 +193,7 @@ export default async function About() {
         >
           <div className={styles.sectionIntro}>
             <div>
-              <p className={styles.eyebrow}>02 / What guides us</p>
+              <p className={styles.eyebrow}>03 / What guides us</p>
               <h2 id="values-title">
                 The standards
                 <br />
@@ -157,7 +224,7 @@ export default async function About() {
           <div className={styles.shell}>
             <div className={styles.sectionIntro}>
               <div>
-                <p className={styles.eyebrow}>03 / People of Perpetual</p>
+                <p className={styles.eyebrow}>04 / People of Perpetual</p>
                 <h2 id="team-title">
                   Good people.
                   <br />

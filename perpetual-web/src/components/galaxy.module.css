@@ -1,0 +1,467 @@
+.hero,
+.auth {
+  color: #f3f6f0;
+  background: #070c17;
+  overflow: hidden;
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 30px;
+  align-items: center;
+  padding-block: 28px 30px;
+}
+.heroCopy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #c5d0cc;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.eyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d0f477;
+  flex-shrink: 0;
+}
+.heroCopy h1 {
+  font-size: clamp(52px, 6.6vw, 94px);
+  line-height: 1.03;
+  letter-spacing: -0.065em;
+  margin: 26px 0;
+  overflow-wrap: anywhere;
+}
+.heroCopy h1 > span {
+  display: block;
+}
+.heroCopy h1 > span:first-child {
+  font-size: 1.07em;
+  letter-spacing: -0.045em;
+}
+.accent {
+  color: #d0f477;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+.heroCopy > p {
+  color: #c4ced8;
+  white-space: pre-line;
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 490px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 30px;
+}
+.actions :global(.button) {
+  background: #d0f477;
+  color: #142011;
+  border-color: #d0f477;
+  border-radius: 99px;
+  font-size: 13px;
+  gap: 18px;
+}
+.actions :global(.text-link) {
+  color: #edf3e6;
+  font-size: 13px;
+}
+.disciplines {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 34px;
+  color: #9dadaf;
+  font-size: 11px;
+}
+.disciplines span + span {
+  border-left: 1px solid #ffffff30;
+  padding-left: 18px;
+}
+.heroVisual {
+  margin: 0 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 640px;
+}
+.scene {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(1px 1px at 12% 24%, #ffffff90 98%, transparent),
+    radial-gradient(1px 1px at 84% 12%, #ffffff80 98%, transparent),
+    radial-gradient(1.5px 1.5px at 90% 63%, #b5d7faaa 98%, transparent),
+    radial-gradient(1px 1px at 23% 82%, #ffffff80 98%, transparent),
+    radial-gradient(1px 1px at 58% 92%, #ffffff70 98%, transparent),
+    radial-gradient(1px 1px at 38% 10%, #ffffff70 98%, transparent);
+}
+.heroVisual .centerEarth {
+  width: 34%;
+}
+.heroVisual figcaption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 18px 24px 0;
+  color: #bcc9ce;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 20px;
+  border-top: 1px solid #ffffff20;
+  color: #aebcc7;
+  font-size: 11px;
+}
+.motion {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  background: #ffffff08;
+  color: #dae5e7;
+  border: 1px solid #ffffff24;
+  border-radius: 99px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.authGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 470px);
+  align-items: center;
+  gap: clamp(40px, 8vw, 110px);
+  padding-block: 22px 32px;
+}
+.authStory {
+  min-width: 0;
+  align-self: start;
+}
+.back {
+  color: #c4d2d7;
+  font-size: 12px;
+}
+.authIntro {
+  container-type: inline-size;
+  margin-top: 16px;
+}
+.authIntro h2 {
+  font-size: clamp(20px, 6.8cqw, 44px);
+  line-height: 1.15;
+  margin: 14px 0;
+}
+.authIntro h2 em {
+  font-family: Georgia, serif;
+  color: #d0f477;
+  font-weight: 400;
+}
+.authIntro p {
+  color: #bac9d0;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.authVisual {
+  max-width: 360px;
+  margin: 10px auto 0;
+}
+.security {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: #b8c9cf;
+}
+.auth .panel {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 36px;
+  background: #f7f8f0;
+  color: #20291e;
+  border: 1px solid #fff;
+  border-radius: 24px;
+  box-shadow: 0 24px 70px #0004;
+}
+.panel h1 {
+  font-size: clamp(32px, 3vw, 44px);
+  margin: 18px 0 12px;
+  letter-spacing: -0.055em;
+}
+.panel > p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.panel :global(.field input) {
+  background: #fff;
+}
+.panel :global(.form-note) {
+  font-size: 12px;
+}
+.panel :global(.social-login) {
+  margin-top: 22px;
+}
+.paused *,
+.paused *::before {
+  animation-play-state: paused !important;
+}
+@media (max-width: 1000px) {
+  .heroGrid {
+    gap: 10px;
+  }
+  .heroCopy h1 {
+    font-size: 64px;
+  }
+  .authGrid {
+    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  }
+  .auth .panel {
+    padding: 28px;
+  }
+}
+@media (max-width: 760px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .heroCopy h1 {
+    font-size: clamp(52px, 13vw, 76px);
+    margin-block: 22px;
+  }
+  .heroCopy > p {
+    font-size: 14px;
+  }
+  .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.07em;
+  }
+  .disciplines {
+    margin-top: 24px;
+    gap: 12px;
+    font-size: 10px;
+  }
+  .disciplines span + span {
+    padding-left: 12px;
+  }
+  .heroVisual {
+    width: 100%;
+    max-width: 380px;
+    margin-inline: auto;
+  }
+  .heroVisual figcaption {
+    padding: 6px 0 0;
+    font-size: 9px;
+  }
+  .bottom {
+    font-size: 9px;
+    gap: 12px;
+  }
+  .authGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding-block: 18px 28px;
+  }
+  .authStory {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 6px;
+    align-items: center;
+  }
+  .back {
+    grid-column: 1 / -1;
+    margin-bottom: 14px;
+  }
+  .authIntro {
+    margin-top: 0;
+  }
+  .authIntro h2 {
+    font-size: clamp(20px, 6.8cqw, 38px);
+    margin-block: 12px;
+  }
+  .authIntro p {
+    font-size: 12px;
+  }
+  .authIntro .eyebrow {
+    font-size: 8px;
+  }
+  .authVisual {
+    margin: 4px auto 0;
+    width: 100%;
+    max-width: 240px;
+  }
+  .security {
+    grid-column: 1 / -1;
+    margin-top: 18px;
+    font-size: 10px;
+  }
+  .auth .panel {
+    padding: 26px 22px;
+    border-radius: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .earthSurface,
+  .orbitingPlanet {
+    animation: none;
+  }
+}
+
+.orbitalSystem {
+  position: absolute;
+  inset: 5%;
+}
+.orbitPath {
+  position: absolute;
+  border: 1px solid #d6e6ff30;
+  border-radius: 50%;
+  transform: rotate(-20deg);
+}
+.outerPath {
+  width: 88%;
+  height: 60%;
+  left: 6%;
+  top: 20%;
+}
+.innerPath {
+  width: 68%;
+  height: 43%;
+  left: 16%;
+  top: 28.5%;
+}
+.centerEarth {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(-16deg);
+  z-index: 2;
+}
+.earthSurface {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #246995;
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  animation: earth-spin 48s linear infinite;
+  box-shadow:
+    inset -20px -5px 25px 4px #010511dd,
+    inset 3px 1px 7px #c5f1ff,
+    0 0 20px #5a99e566;
+}
+.atmosphere {
+  position: absolute;
+  inset: -2%;
+  border: 1px solid #a8dfff80;
+  border-radius: 50%;
+  box-shadow: 0 0 24px #4b95ff55;
+}
+.orbitTrack {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-20deg);
+}
+.orbitingPlanet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  offset-path: ellipse(44% 30% at 50% 50%);
+  offset-rotate: 0deg;
+  animation: planet-travel 100s linear infinite;
+  box-shadow:
+    inset -8px -4px 12px #02050bc9,
+    inset 2px 0 4px #caecff70;
+}
+.gasPlanet {
+  width: 12%;
+  aspect-ratio: 1;
+  background: repeating-linear-gradient(
+    12deg,
+    #a1947a 0,
+    #d3ba95 5px,
+    #877965 9px,
+    #c0b397 14px
+  );
+  animation-duration: 110s;
+  animation-delay: -52s;
+  offset-distance: 47%;
+}
+.planetRing {
+  position: absolute;
+  inset: 34% -38%;
+  border: 5px solid #c2b99faa;
+  border-left-color: #e0cfa9;
+  border-bottom-color: #e0cfa9;
+  outline: 1px solid #dcc9a388;
+  border-radius: 50%;
+  transform: rotate(-24deg);
+}
+.copperPlanet {
+  width: 7%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    ellipse at 30% 22%,
+    #d9a381,
+    #955e42 35%,
+    #4d3028 78%
+  );
+  offset-path: ellipse(34% 21.5% at 50% 50%);
+  animation-duration: 75s;
+  animation-direction: reverse;
+  animation-delay: -17s;
+  offset-distance: 77%;
+}
+.icePlanet {
+  width: 5%;
+  aspect-ratio: 1;
+  background: linear-gradient(145deg, #b8e0f4, #557c9c 50%, #14243b);
+  animation-duration: 145s;
+  animation-delay: -18s;
+  offset-distance: 12%;
+}
+@keyframes earth-spin {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+@keyframes planet-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .earthSurface,
+  .orbitingPlanet {
+    animation: none;
+  }
+}

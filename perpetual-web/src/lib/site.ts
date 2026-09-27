@@ -4,6 +4,8 @@ export const description =
   "Perpetual Labs builds websites and business software, with IT infrastructure, security, cloud services, and support from Kampala, Uganda.";
 export function safeImage(value?: string) {
   if (!value) return null;
+  if (/^\/images\/projects\/[a-z0-9-]+\.(webp|png|jpe?g|svg)$/.test(value))
+    return value;
   try {
     const url = new URL(value);
     const apiOrigin = new URL(

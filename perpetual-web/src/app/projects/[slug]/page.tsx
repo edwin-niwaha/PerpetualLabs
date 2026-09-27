@@ -1,12 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Layers,
+} from "lucide-react";
+import { ProductImage } from "@/components/product-image";
+import { businessProducts } from "@/lib/business-products";
+import { mobileProjects, projectImage } from "@/lib/mobile-projects";
 import { notFound } from "next/navigation";
 import { content } from "@/lib/api";
 import { safeImage, safeWebsite } from "@/lib/site";
 import { ContactCta } from "@/components/ui";
 import { ProjectArtwork } from "@/components/project-artwork";
 async function getProject(slug: string) {
+  const portfolioItem = [...businessProducts, ...mobileProjects].find(
+    (item) => item.slug === slug,
+  );
+  if (portfolioItem) return portfolioItem;
   const [data, products] = await Promise.all([
     content("projects"),
     content("products"),
@@ -34,75 +47,193 @@ export default async function ProjectDetail({
 }) {
   const item = await getProject((await params).slug);
   if (!item) notFound();
-  const image = safeImage(item.image);
+  const image = projectImage(item.slug) || safeImage(item.image);
   const status = "status" in item ? item.status : null;
   const website = safeWebsite(item.website_url);
+  const statusLabel =
+    status === "live"
+      ? "Live product"
+      : status === "complete"
+        ? "Complete"
+        : status === "development"
+          ? "In development"
+          : status === "available"
+            ? "Available"
+            : "Selected work";
+  const planned = item.slug === "perpetuallearn";
+  const features = item.focus || [];
   return (
-    <>
-      <article className="shell detail-page">
-        <Link href="/projects" className="text-link">
-          ← All work
-        </Link>
-        <h1>{item.title}</h1>
-        <p className="detail-lead">{item.description}</p>
-        <div className="detail-meta">
-          {item.project_type && <span>{item.project_type}</span>}
-          {status === "development" && (
-            <span>In development · Not yet hosted</span>
-          )}
-          {item.completion_date && (
-            <span>
-              Completed{" "}
-              {new Date(item.completion_date).toLocaleDateString("en-GB", {
-                month: "long",
-                year: "numeric",
+    <div className="project-detail-view">
+      <article className="shell project-case">
+        <nav className="project-case-nav" aria-label="Project navigation">
+          <Link href="/projects" className="text-link">
+            <ArrowLeft size={16} /> All projects
+          </Link>
+          <span
+            className={`case-status ${status === "development" ? "case-status-development" : ""}`}
+          >
+            <span aria-hidden="true" />
+            {statusLabel}
+          </span>
+        </nav>
+        <header className="project-case-header">
+          <span className="eyebrow">
+            {item.project_type || "A Perpetual Labs project"}
+          </span>
+          <h1>{item.title}</h1>
+          <p>{item.description}</p>
+        </header>
+        <div className="project-case-showcase">
+          <figure className="project-case-figure">
+            <div className="project-case-image">
+              {image ? (
+                <ProductImage
+                  src={image}
+                  alt={
+                    "image_alt" in item && typeof item.image_alt === "string"
+                      ? item.image_alt
+                      : item.title
+                  }
+                  title={item.title}
+                  fallbackSrc={projectImage(item.slug)}
+                  sizes="(max-width: 960px) 100vw, 65vw"
+                  eager
+                />
+              ) : (
+                <ProjectArtwork project={item} />
+              )}
+            </div>
+            <figcaption>
+              <span>
+                PERPETUAL LABS /{" "}
+                {item.project_type?.startsWith("Mobile application")
+                  ? "MOBILE"
+                  : "DIGITAL PRODUCTS"}
+              </span>
+              <Layers size={17} aria-hidden="true" />
+            </figcaption>
+          </figure>
+          <aside
+            className="project-case-overview"
+            aria-labelledby="project-overview-title"
+          >
+            <span className="eyebrow">The overview</span>
+            <h2 id="project-overview-title">
+              {planned
+                ? "A look at what’s ahead."
+                : "Thoughtfully built. Purposefully made."}
+            </h2>
+            <p className="project-case-description">
+              {item.detail || item.description}
+            </p>
+            <dl className="project-case-facts">
+              <div>
+                <dt>Category</dt>
+                <dd>{item.project_type || "Digital product"}</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd>{statusLabel}</dd>
+              </div>
+              {item.completion_date && (
+                <div>
+                  <dt>Completed</dt>
+                  <dd>
+                    {new Date(item.completion_date).toLocaleDateString(
+                      "en-GB",
+                      { month: "long", year: "numeric", timeZone: "UTC" },
+                    )}
+                  </dd>
+                </div>
+              )}
+            </dl>
+            <div className="project-case-actions">
+              {website && (
+                <a
+                  className="button"
+                  href={website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit project <ArrowUpRight size={18} />
+                </a>
+              )}
+              <Link
+                href="/contact"
+                className={website ? "text-link" : "button"}
+              >
+                Discuss a similar project <ArrowUpRight size={18} />
+              </Link>
+            </div>
+          </aside>
+        </div>
+        {features.length > 0 && (
+          <section
+            className="project-case-capabilities"
+            aria-labelledby="project-features-title"
+          >
+            <div className="project-case-section-heading">
+              <div>
+                <span className="eyebrow">
+                  {planned ? "On the roadmap" : "At a glance"}
+                </span>
+                <h2 id="project-features-title">
+                  {planned
+                    ? "Planned capabilities."
+                    : "What it brings together."}
+                </h2>
+              </div>
+              <span className="project-case-count">
+                {String(features.length).padStart(2, "0")}{" "}
+                {planned ? "planned capabilities" : "core capabilities"}
+              </span>
+            </div>
+            <ul className="project-case-feature-grid">
+              {features.map((feature, index) => {
+                const separator = feature.indexOf(":");
+                const title =
+                  separator === -1 ? feature : feature.slice(0, separator);
+                const description =
+                  separator === -1 ? null : feature.slice(separator + 1).trim();
+                return (
+                  <li key={feature} className="project-case-feature">
+                    <div className="project-case-feature-top">
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      {planned ? (
+                        <Layers size={19} aria-hidden="true" />
+                      ) : (
+                        <Check size={19} aria-hidden="true" />
+                      )}
+                    </div>
+                    <h3>{title}</h3>
+                    {description && <p>{description}</p>}
+                  </li>
+                );
               })}
-            </span>
-          )}
-          {item.technologies?.map((tech) => (
-            <span key={tech}>{tech}</span>
-          ))}
-        </div>
-        <div className="detail-image">
-          {image ? (
-            <Image
-              src={image}
-              alt={item.title}
-              fill
-              sizes="(max-width: 850px) 100vw, 850px"
-              unoptimized
-              priority
-            />
-          ) : (
-            <ProjectArtwork project={item} />
-          )}
-        </div>
-        {item.detail && <div className="prose">{item.detail}</div>}
-        {!!item.focus?.length && (
-          <section className="detail-capabilities">
-            <h2>At a glance</h2>
+            </ul>
+          </section>
+        )}
+        {!!item.technologies?.length && (
+          <section className="project-case-stack" aria-label="Technologies">
+            <span className="eyebrow">Built with</span>
             <ul>
-              {item.focus.map((feature) => (
-                <li key={feature}>{feature}</li>
+              {item.technologies.map((tech) => (
+                <li key={tech}>{tech}</li>
               ))}
             </ul>
           </section>
         )}
-        {website && (
-          <a
-            href={website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="button"
-          >
-            Visit project ↗
-          </a>
-        )}
-        <Link href="/contact" className="button">
-          Discuss a similar project ↗
-        </Link>
+        <div className="project-case-more">
+          <div>
+            <span className="eyebrow">There’s more to explore</span>
+            <h2>Different ideas. Same care.</h2>
+          </div>
+          <Link href="/projects" className="text-link">
+            View all projects <ArrowRight size={18} />
+          </Link>
+        </div>
       </article>
       <ContactCta />
-    </>
+    </div>
   );
 }

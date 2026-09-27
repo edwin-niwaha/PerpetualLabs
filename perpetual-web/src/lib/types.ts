@@ -76,7 +76,7 @@ export type ContentMap = {
 export type Product = Project & {
   name: string;
   image_alt: string;
-  status: "live" | "development" | "available";
+  status: "live" | "development" | "available" | "complete";
   is_featured: boolean;
   is_published: boolean;
   sort_order: number;

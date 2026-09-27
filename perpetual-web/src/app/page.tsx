@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowUpRight, Asterisk } from "lucide-react";
 import { GalaxyHero } from "@/components/galaxy-hero";
 import { ProductGrid } from "@/components/product-grid";
-import { safeImage, safeWebsite } from "@/lib/site";
 import {
   Eyebrow,
   SectionHeading,
@@ -16,25 +15,15 @@ import { websiteContent } from "@/lib/website-content";
 export const dynamic = "force-dynamic";
 export default async function Home() {
   const { company, section, features } = await websiteContent();
-  const [services, products, articles, testimonials, visuals] =
-    await Promise.all([
-      content("services"),
-      content("products"),
-      content("blog"),
-      content("testimonials"),
-      content("visuals"),
-    ]);
-  const galaxy = visuals.items.find((v) => v.key === "galaxy");
-  const earth = visuals.items.find((v) => v.key === "earth");
+  const [services, products, articles, testimonials] = await Promise.all([
+    content("services"),
+    content("products"),
+    content("blog"),
+    content("testimonials"),
+  ]);
   return (
     <>
-      <GalaxyHero
-        copy={section("home-hero")}
-        galaxy={safeImage(galaxy?.image)}
-        earth={safeImage(earth?.image)}
-        credit={galaxy?.credit || ""}
-        source={safeWebsite(galaxy?.source_url)}
-      />
+      <GalaxyHero copy={section("home-hero")} />
       <div className="principle-strip">
         <div className="shell">
           <span>Based in {company.location}</span>

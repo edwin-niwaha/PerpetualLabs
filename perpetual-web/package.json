@@ -12,7 +12,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:e2e": "playwright test",
     "format": "prettier --write src tests *.ts *.md",
-    "test:account": "playwright test --config=playwright.account.config.ts"
+    "test:account": "playwright test --config=playwright.account.config.ts",
+    "prebuild": "node scripts/check-project-images.mjs"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
