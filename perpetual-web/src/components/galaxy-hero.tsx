@@ -17,10 +17,6 @@ export function GalaxyHero({
     >
       <div className={`shell ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>
-            <span />
-            {copy.eyebrow}
-          </span>
           <h1 id="home-title">
             {copy.title.split("\n").map((line, index, lines) => (
               <span

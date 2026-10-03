@@ -37,7 +37,7 @@
   font-size: clamp(52px, 6.6vw, 94px);
   line-height: 1.03;
   letter-spacing: -0.065em;
-  margin: 26px 0;
+  margin: 0 0 26px;
   overflow-wrap: anywhere;
 }
 .heroCopy h1 > span {
@@ -239,7 +239,7 @@
     padding: 28px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .heroGrid {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
@@ -248,7 +248,7 @@
   }
   .heroCopy h1 {
     font-size: clamp(52px, 13vw, 76px);
-    margin-block: 22px;
+    margin-block: 0 22px;
   }
   .heroCopy > p {
     font-size: 14px;

@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/dm-sans";
 import "./globals.css";
+import "./responsive.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { siteUrl, description } from "@/lib/site";

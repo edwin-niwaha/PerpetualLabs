@@ -1220,7 +1220,7 @@ a:hover .project-open {
     gap: 70px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .shell {
     width: calc(100% - 40px);
   }
@@ -1807,7 +1807,7 @@ a:hover .project-open {
     padding: 34px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .faq-section,
   .mission-grid {
     grid-template-columns: 1fr;
@@ -2270,7 +2270,7 @@ a:hover .project-open {
     min-height: 680px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .cosmos-hero {
     min-height: 940px;
   }
@@ -2666,7 +2666,7 @@ a:hover .project-open {
 .page-intro h1 {
   overflow-wrap: anywhere;
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .footer-top > div:first-child {
     flex: auto;
   }
@@ -3731,7 +3731,7 @@ a:hover .project-open {
     grid-column: 1 / -1;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .catalogue-page .page-intro {
     padding-block: 26px 16px;
   }
@@ -3899,7 +3899,7 @@ a:hover .project-open {
 .journal-save-feedback {
   scroll-margin-top: 110px;
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .journal-compose-heading {
     flex-direction: column;
   }
@@ -3944,7 +3944,7 @@ a:hover .project-open {
   color: #596151;
   line-height: 1.8;
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .mobile-project-heading {
     display: block;
   }
